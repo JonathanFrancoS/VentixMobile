@@ -1,0 +1,35 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list">
+          <ion-list-header>Ventix Mobile</ion-list-header>
+          <ion-note>v0.1.0</ion-note>
+
+          @for (p of appPages; track p; let i = $index) {
+            <ion-menu-toggle auto-hide="false">
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                #rla="routerLinkActive"
+              >
+                <ion-icon aria-hidden="true" slot="start" [name]="rla.isActive ? p.activeIcon : p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          }
+        </ion-list>
+      </ion-content>
+      <ion-footer class="menu-footer">
+        <ion-button expand="block" color="danger">
+          <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+          Cerrar jornada
+        </ion-button>
+      </ion-footer>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

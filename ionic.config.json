@@ -1,0 +1,7 @@
+{
+  "name": "VentixMobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

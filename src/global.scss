@@ -1,0 +1,265 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import '@ionic/angular/css/core.css';
+
+/* Basic CSS for apps built with Ionic */
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+}
+
+html,
+body {
+  width: 100%;
+  min-width: 320px;
+  height: 100%;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--app-color-canvas);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-body);
+  font-size: var(--app-font-size-body-lg);
+  line-height: var(--app-line-height-body-lg);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums;
+}
+
+ion-app {
+  background: var(--app-color-canvas);
+  color: var(--app-color-ink);
+  font-family: var(--app-font-body);
+}
+
+ion-content {
+  --background: var(--app-color-canvas);
+  color: var(--app-color-ink);
+}
+
+ion-toolbar {
+  --background: var(--app-color-navy);
+  --color: #ffffff;
+  --border-color: transparent;
+}
+
+ion-title {
+  font-family: var(--app-font-display);
+  font-size: var(--app-font-size-title-lg);
+  font-weight: 600;
+  line-height: var(--app-line-height-title-lg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--app-color-navy);
+  font-family: var(--app-font-display);
+}
+
+h1 {
+  font-size: var(--app-font-size-headline-lg);
+  font-weight: 700;
+  line-height: var(--app-line-height-headline-lg);
+}
+
+h2 {
+  font-size: var(--app-font-size-headline-md);
+  font-weight: 600;
+  line-height: var(--app-line-height-headline-md);
+}
+
+ion-button {
+  --border-radius: var(--app-radius-default);
+  --box-shadow: none;
+  font-family: var(--app-font-display);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+ion-button::part(native) {
+  min-height: 48px;
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease;
+}
+
+ion-button[color='primary'] {
+  --background-activated: var(--app-color-electric-blue-dark);
+}
+
+ion-button[color='primary']::part(native):active {
+  transform: scale(0.98);
+}
+
+ion-button[fill='outline'] {
+  --background: var(--app-color-surface);
+  --color: var(--app-color-navy);
+  --border-color: var(--app-color-outline);
+  --border-width: 1.5px;
+}
+
+ion-button:focus-visible::part(native) {
+  outline: 2px solid var(--app-color-electric-blue);
+  outline-offset: 2px;
+}
+
+ion-card {
+  --background: var(--app-color-surface);
+  --color: var(--app-color-ink);
+  margin: var(--app-space-md);
+  border: 1px solid var(--app-color-outline);
+  border-radius: var(--app-radius-card);
+  box-shadow: var(--app-shadow-card);
+}
+
+ion-card-title {
+  color: var(--app-color-navy);
+  font-family: var(--app-font-display);
+  font-size: var(--app-font-size-title-lg);
+  font-weight: 600;
+}
+
+ion-input,
+ion-textarea,
+ion-select {
+  --background: var(--app-color-surface);
+  --border-color: var(--app-color-outline-strong);
+  --border-radius: var(--app-radius-default);
+  --border-width: 1px;
+  --highlight-color-focused: var(--app-color-electric-blue);
+  --placeholder-color: var(--app-color-placeholder);
+  --placeholder-opacity: 1;
+  --color: var(--app-color-ink);
+  font-family: var(--app-font-utility);
+}
+
+ion-input.has-focus,
+ion-textarea.has-focus,
+ion-select.has-focus {
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+}
+
+ion-checkbox {
+  --size: 20px;
+  --border-radius: 6px;
+  --border-width: 1.5px;
+  --border-color: var(--app-color-placeholder);
+  --border-color-checked: var(--app-color-electric-blue);
+  --checkbox-background-checked: var(--app-color-electric-blue);
+  --checkmark-color: #ffffff;
+  display: inline-flex;
+  min-width: 48px;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+}
+
+ion-chip {
+  --background: var(--app-color-surface-subtle);
+  --color: var(--app-color-muted);
+  min-height: 36px;
+  border-radius: var(--app-radius-pill);
+  font-family: var(--app-font-utility);
+  font-size: var(--app-font-size-label-lg);
+  font-weight: 600;
+}
+
+ion-modal,
+ion-popover,
+ion-alert,
+ion-action-sheet {
+  --backdrop-background: var(--app-color-navy-deep);
+  --backdrop-opacity: 0.4;
+  --box-shadow: var(--app-shadow-overlay);
+}
+
+.metric-stat {
+  color: var(--app-color-navy);
+  font-family: var(--app-font-display);
+  font-size: var(--app-font-size-metric);
+  font-weight: 800;
+  line-height: var(--app-line-height-metric);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-micro,
+.status-pill {
+  font-family: var(--app-font-utility);
+  font-size: var(--app-font-size-label-md);
+  font-weight: 700;
+}
+
+.status-pill {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  padding: 0 var(--app-space-sm);
+  border-radius: var(--app-radius-pill);
+}
+
+.status-pill--success {
+  background: var(--app-color-success-surface);
+  color: var(--app-color-success-dark);
+}
+
+.status-pill--warning {
+  background: var(--app-color-warning-surface);
+  color: var(--app-color-warning-dark);
+}
+
+.status-pill--danger {
+  background: var(--app-color-danger-surface);
+  color: var(--app-color-danger-dark);
+}
+
+.tabular-nums,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 599px) {
+  ion-content:not(.menu-content) {
+    --padding-start: var(--app-gutter-mobile);
+    --padding-end: var(--app-gutter-mobile);
+  }
+}
