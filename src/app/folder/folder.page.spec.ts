@@ -23,4 +23,12 @@ describe('FolderPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('shows the sales catalog on the sales registration page', () => {
+    fixture.componentRef.setInput('folder', 'Registro de ventas');
+    fixture.detectChanges();
+
+    const app = fixture.nativeElement as HTMLElement;
+    expect(app.querySelector('app-sales-catalog')).not.toBeNull();
+  });
 });

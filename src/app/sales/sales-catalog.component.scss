@@ -1,0 +1,144 @@
+.sales-page {
+  padding: 12px;
+  touch-action: pan-y;
+}
+
+.category-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.slide-heading {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.slide-category {
+  margin: 0;
+  color: var(--ion-color-primary);
+}
+
+.slide-heading h1 {
+  overflow: hidden;
+  margin: 0;
+  color: var(--app-color-navy);
+  font-size: 16px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+}
+
+.category-page {
+  --slide-offset: 12px;
+  margin-top: 12px;
+  animation: category-enter 180ms ease-out both;
+}
+
+.category-page--backward {
+  --slide-offset: -12px;
+}
+
+@keyframes category-enter {
+  from {
+    opacity: 0.6;
+    transform: translateX(var(--slide-offset));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 10px;
+}
+
+.product-card {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: clamp(100px, 16vw, 140px) minmax(34px, auto) 16px 48px;
+  gap: 4px;
+  margin: 0;
+  padding: 8px;
+}
+
+.product-image {
+  display: grid;
+  width: min(100%, clamp(74px, 12vw, 112px));
+  aspect-ratio: 3 / 4;
+  place-items: center;
+  justify-self: center;
+  overflow: hidden;
+  padding: 3px;
+  border: 0;
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-surface-subtle);
+  cursor: pointer;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-image:active {
+  transform: scale(0.96);
+}
+
+.product-name {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  font-size: clamp(11px, 3.4vw, 13px);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.product-volume {
+  margin: 0;
+  color: var(--app-color-muted);
+  text-align: center;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.quantity-button {
+  flex: 0 0 44px;
+  margin: 0;
+  --border-radius: 12px;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.quantity-value {
+  flex: 1;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-page,
+  .product-image,
+  .quantity-button::part(native) {
+    animation: none;
+    transition: none;
+  }
+
+  .product-image:active {
+    transform: none;
+  }
+}

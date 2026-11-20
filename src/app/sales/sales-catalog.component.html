@@ -1,0 +1,85 @@
+<main
+  class="sales-page"
+  aria-label="Registro de ventas"
+  (touchstart)="onCarouselTouchStart($event)"
+  (touchend)="onCarouselTouchEnd($event)"
+  (touchcancel)="onCarouselTouchCancel()"
+>
+  <nav class="category-navigation" aria-label="Páginas del catálogo">
+    <ion-button
+      class="category-arrow"
+      fill="clear"
+      aria-label="Página anterior"
+      [disabled]="activeSlideIndex() === 0"
+      (click)="moveSlide(-1)"
+    >
+      ‹
+    </ion-button>
+
+    <header class="slide-heading" aria-live="polite">
+      <p class="slide-category metric-micro">{{ currentSlide().category }}</p>
+      <h1>{{ currentSlide().family }}</h1>
+    </header>
+
+    <ion-button
+      class="category-arrow"
+      fill="clear"
+      aria-label="Página siguiente"
+      [disabled]="activeSlideIndex() === slides.length - 1"
+      (click)="moveSlide(1)"
+    >
+      ›
+    </ion-button>
+  </nav>
+
+  @for (slide of [currentSlide()]; track slide.id) {
+    <section
+      class="category-page"
+      [class.category-page--backward]="navigationDirection() < 0"
+      [attr.aria-label]="slide.family"
+    >
+      <section class="products-grid" aria-label="Presentaciones disponibles">
+        @for (product of slide.products; track product.id) {
+          <ion-card class="product-card">
+            <button
+              class="product-image"
+              type="button"
+              [attr.aria-label]="'Agregar una unidad de ' + product.name + ', ' + product.volume"
+              (click)="adjustQuantity(product.id, 1)"
+            >
+              <img [src]="productImage" alt="" loading="lazy" />
+            </button>
+
+            <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-volume metric-micro">{{ product.volume }}</p>
+
+            <div class="quantity-controls">
+              <ion-button
+                class="quantity-button"
+                fill="solid"
+                color="primary"
+                [attr.aria-label]="'Restar una unidad de ' + product.volume"
+                [disabled]="quantity(product.id) === 0"
+                (click)="adjustQuantity(product.id, -1)"
+              >
+                −
+              </ion-button>
+              <output class="quantity-value metric-stat" [attr.aria-label]="'Cantidad: ' + quantity(product.id)">
+                {{ quantity(product.id) }}
+              </output>
+              <ion-button
+                class="quantity-button"
+                fill="solid"
+                color="primary"
+                [attr.aria-label]="'Agregar una unidad de ' + product.volume"
+                (click)="adjustQuantity(product.id, 1)"
+              >
+                +
+              </ion-button>
+            </div>
+          </ion-card>
+        }
+      </section>
+    </section>
+  }
+</main>
