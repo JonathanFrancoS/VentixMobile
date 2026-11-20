@@ -1,0 +1,140 @@
+<main class="quota-page">
+  <p class="quota-hint">Los totales se actualizan automáticamente. Si editas uno, se conserva hasta restablecerlo.</p>
+
+  @for (section of sections; track section.id) {
+    <section class="quota-section" [attr.aria-label]="section.name">
+      <h1>{{ section.name }}</h1>
+
+      @for (family of section.families; track family.id; let index = $index) {
+        @if (isFirstSpecializedFamily(section, family, index)) {
+          <h2 class="family-group-heading">Rones especializados</h2>
+        }
+
+        <ion-card class="quota-family">
+          <h2 class="family-title">{{ family.name }}</h2>
+
+          @for (product of family.products; track product.id) {
+            <div class="quota-row">
+              <label [for]="'quota-' + product.id">{{ product.volume }}</label>
+              <div class="quota-controls">
+                <input
+                  [id]="'quota-' + product.id"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  [disabled]="!isProductEditing(product.id)"
+                  [value]="displayValue(productQuota(product.id))"
+                  [attr.aria-label]="'Cuota, ' + family.name + ', ' + product.volume"
+                  (input)="setProductQuota(product.id, $event)"
+                />
+                <button
+                  class="icon-action edit-action"
+                  type="button"
+                  [attr.aria-label]="
+                    (isProductEditing(product.id) ? 'Guardar cuota de ' : 'Editar cuota de ') +
+                    family.name +
+                    ', ' +
+                    product.volume
+                  "
+                  (click)="toggleProductEdit(product.id)"
+                >
+                  <ion-icon [name]="isProductEditing(product.id) ? 'checkmark-outline' : 'create-outline'"></ion-icon>
+                </button>
+                <button
+                  class="icon-action delete-action"
+                  type="button"
+                  [attr.aria-label]="'Borrar cuota de ' + family.name + ', ' + product.volume"
+                  (click)="resetProductQuota(product.id)"
+                >
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
+            </div>
+          }
+
+          <div class="family-total">
+            <label [for]="'total-' + family.id">Total</label>
+            <div class="quota-controls">
+              <input
+                [id]="'total-' + family.id"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                placeholder="0"
+                [disabled]="!isTotalEditing(family.id)"
+                [value]="displayValue(total(family.id))"
+                [attr.aria-label]="'Total de ' + family.name"
+                (input)="setManualTotal(family.id, $event)"
+              />
+              <button
+                class="icon-action edit-action"
+                type="button"
+                [attr.aria-label]="
+                  (isTotalEditing(family.id) ? 'Guardar total de ' : 'Editar total de ') + family.name
+                "
+                (click)="toggleTotalEdit(family.id)"
+              >
+                <ion-icon [name]="isTotalEditing(family.id) ? 'checkmark-outline' : 'create-outline'"></ion-icon>
+              </button>
+              <button
+                class="icon-action delete-action"
+                type="button"
+                [attr.aria-label]="'Restablecer total automático de ' + family.name"
+                (click)="resetManualTotal(family.id)"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </ion-card>
+      }
+
+      <div class="section-total">
+        <label [for]="'section-total-' + section.id">Total {{ section.name }}</label>
+        <div class="quota-controls">
+          <input
+            [id]="'section-total-' + section.id"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            step="1"
+            placeholder="0"
+            [disabled]="!isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)"
+            [value]="displayValue(total(section.id === 'ron' ? 'ron-combined' : section.id))"
+            [attr.aria-label]="'Total de ' + section.name"
+            (input)="setManualTotal(section.id === 'ron' ? 'ron-combined' : section.id, $event)"
+          />
+          <button
+            class="icon-action edit-action"
+            type="button"
+            [attr.aria-label]="
+              (isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)
+                ? 'Guardar total de '
+                : 'Editar total de ') + section.name
+            "
+            (click)="toggleTotalEdit(section.id === 'ron' ? 'ron-combined' : section.id)"
+          >
+            <ion-icon
+              [name]="
+                isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)
+                  ? 'checkmark-outline'
+                  : 'create-outline'
+              "
+            ></ion-icon>
+          </button>
+          <button
+            class="icon-action delete-action"
+            type="button"
+            [attr.aria-label]="'Restablecer total automático de ' + section.name"
+            (click)="resetManualTotal(section.id === 'ron' ? 'ron-combined' : section.id)"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </section>
+  }
+</main>

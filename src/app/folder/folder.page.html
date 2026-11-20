@@ -16,6 +16,8 @@
 
   @if (folder() === 'Registro de ventas') {
   <app-sales-catalog></app-sales-catalog>
+  } @else if (folder() === 'Cuotas') {
+  <app-quota-form></app-quota-form>
   } @else {
   <div id="container">
     <strong class="capitalize">{{ folder() }}</strong>
