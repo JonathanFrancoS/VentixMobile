@@ -61,7 +61,7 @@
 .product-card {
   display: grid;
   min-width: 0;
-  grid-template-rows: clamp(100px, 16vw, 140px) minmax(34px, auto) 16px 48px;
+  grid-template-rows: clamp(100px, 16vw, 140px) minmax(34px, auto) 16px 48px 14px;
   gap: 4px;
   margin: 0;
   padding: 8px;

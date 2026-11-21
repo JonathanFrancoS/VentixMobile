@@ -13,7 +13,7 @@
       <p class="quota-setup-description">Elige cómo quieres registrar las metas de esta jornada.</p>
       <button class="quota-mode-card" type="button" (click)="selectMode('totals')">
         <strong>Totales generales</strong>
-        <span>Ingresa una cuota total para aguardientes y otra para rones.</span>
+        <span>Define una cuota para aguardiente, ron joven y ron especializado.</span>
       </button>
       <button class="quota-mode-card" type="button" (click)="selectMode('products')">
         <strong>Por referencia</strong>
@@ -36,17 +36,29 @@
               [value]="totalAguardientes()"
               (input)="updateTotal('aguardiente', $event)"
             />
-            <label for="quota-total-rones">Total Rones</label>
+            <label for="quota-total-ron-joven">Ron Medellín joven</label>
             <input
-              id="quota-total-rones"
+              id="quota-total-ron-joven"
               type="number"
               inputmode="numeric"
               min="0"
               step="1"
               required
-              placeholder="Ej. 20"
-              [value]="totalRones()"
-              (input)="updateTotal('ron', $event)"
+              placeholder="Ej. 15"
+              [value]="totalRonesJovenes()"
+              (input)="updateTotal('ron-joven', $event)"
+            />
+            <label for="quota-total-ron-especializado">Ron Medellín especializado</label>
+            <input
+              id="quota-total-ron-especializado"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              required
+              placeholder="Ej. 5"
+              [value]="totalRonesEspecializados()"
+              (input)="updateTotal('ron-especializado', $event)"
             />
           </div>
         } @else {

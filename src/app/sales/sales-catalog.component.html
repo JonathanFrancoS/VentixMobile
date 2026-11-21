@@ -32,6 +32,18 @@
     </ion-button>
   </nav>
 
+  <section class="sales-summary" aria-label="Consolidado de ventas">
+    <div>
+      <span>Unidades físicas</span><strong>{{ formatNumber(totals().physicalUnits) }}</strong>
+    </div>
+    <div>
+      <span>Volumen vendido</span><strong>{{ formatNumber(totals().milliliters) }} ml</strong>
+    </div>
+    <div>
+      <span>Botellas eq. de 750 ml</span><strong>{{ formatNumber(totals().total, 2) }}</strong>
+    </div>
+  </section>
+
   @for (slide of [currentSlide()]; track slide.id) {
     <section
       class="category-page"
@@ -77,6 +89,10 @@
                 +
               </ion-button>
             </div>
+            <p class="product-calculation">
+              {{ formatNumber(productTotals(product.id).milliliters) }} ml ·
+              {{ formatNumber(productTotals(product.id).equivalentBottles, 2) }} bot. eq.
+            </p>
           </ion-card>
         }
       </section>

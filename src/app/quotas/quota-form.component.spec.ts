@@ -23,7 +23,7 @@ describe('QuotaFormComponent', () => {
     ).toEqual(['Aguardientes', 'Rones']);
     expect(app.querySelectorAll('.quota-family').length).toBe(10);
     expect(app.querySelectorAll('.quota-row').length).toBe(33);
-    expect(app.querySelectorAll('.section-total input').length).toBe(2);
+    expect(app.querySelectorAll('.section-total input').length).toBe(3);
     expect(app.querySelector('.quota-row label')?.textContent?.trim()).toBe('1750 ml');
     expect(app.querySelector('.quota-row input')?.getAttribute('placeholder')).toBe('0');
     expect((app.querySelector('.quota-row input') as HTMLInputElement).value).toBe('');
@@ -90,10 +90,10 @@ describe('QuotaFormComponent', () => {
     expect(sectionTotal.value).toBe('100');
   });
 
-  it('updates the combined Ron total with values from regular and specialized rum families', () => {
+  it('keeps young and specialized rum quotas independent', () => {
     const app = fixture.nativeElement as HTMLElement;
     const ronSection = app.querySelectorAll('.quota-section')[1] as HTMLElement;
-    const ronTotal = ronSection.querySelector('.section-total input') as HTMLInputElement;
+    const ronTotals = ronSection.querySelectorAll('.section-total input');
     const productRows = ronSection.querySelectorAll('.quota-row');
 
     for (const index of [0, 8]) {
@@ -106,6 +106,7 @@ describe('QuotaFormComponent', () => {
       fixture.detectChanges();
     }
 
-    expect(ronTotal.value).toBe('8');
+    expect((ronTotals[0] as HTMLInputElement).value).toBe('3');
+    expect((ronTotals[1] as HTMLInputElement).value).toBe('5');
   });
 });

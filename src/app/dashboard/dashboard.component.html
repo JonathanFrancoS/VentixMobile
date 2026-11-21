@@ -6,12 +6,7 @@
       <p class="sales-point">{{ journeyData.values().salesPointName || 'Punto de venta pendiente' }}</p>
       <p class="advisor-code">Código del asesor: {{ journeyData.values().advisorCode || '—' }}</p>
     </div>
-    <ion-button
-      class="refresh-button"
-      fill="clear"
-      aria-label="Actualizar rendimiento"
-      (click)="refreshMetrics()"
-    >
+    <ion-button class="refresh-button" fill="clear" aria-label="Actualizar rendimiento" (click)="refreshMetrics()">
       <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
     </ion-button>
   </header>
@@ -44,15 +39,12 @@
         } @else if (summary().tone === 'good') {
           <ion-icon class="trend-icon trend-icon--good" name="trending-up-outline"></ion-icon>
         }
-        <strong
-          [class.status--good]="summary().tone === 'good'"
-          [class.status--low]="summary().tone === 'low'"
-        >
+        <strong [class.status--good]="summary().tone === 'good'" [class.status--low]="summary().tone === 'low'">
           {{ performanceLabel() }}
         </strong>
       </div>
     </div>
-    <p class="bottles-caption">Botellas vendidas en la jornada actual</p>
+    <p class="bottles-caption">Botellas equivalentes vendidas en la jornada actual</p>
     <p class="updated-time">Actualizado {{ formattedUpdateTime() }}</p>
   </section>
 
@@ -108,8 +100,12 @@
         </header>
 
         <div class="commercial-totals">
-          <span>Cuota: <strong>{{ formatNumber(group.quota) }} botellas</strong></span>
-          <span>Vendidas: <strong>{{ formatNumber(group.sold) }} botellas</strong></span>
+          <span
+            >Cuota: <strong>{{ formatNumber(group.quota) }} bot. eq.</strong></span
+          >
+          <span
+            >Vendidas: <strong>{{ formatNumber(group.sold) }} bot. eq.</strong></span
+          >
         </div>
 
         <div
@@ -125,7 +121,7 @@
 
         <div class="commercial-variants">
           @for (variant of group.variants; track variant.familyId) {
-            <span class="commercial-chip">{{ variant.label }}: {{ formatNumber(variant.sold) }} vendidas</span>
+            <span class="commercial-chip"> {{ variant.label }}: {{ formatNumber(variant.sold) }} bot. eq. </span>
           }
         </div>
       </article>

@@ -2,14 +2,21 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter, Router, RouterLink } from '@angular/router';
-import { AlertController, MenuController, provideIonicAngular } from '@ionic/angular';
-import { vi } from 'vitest';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { AlertController, MenuController, provideIonicAngular, ToastController } from '@ionic/angular';
+import { afterEach, vi } from 'vitest';
 
 import { AppComponent } from './app.component';
 import { JourneyDataService } from './journey-data/journey-data.service';
 import { ObservationsService } from './observations/observations.service';
 import { QuotaStateService } from './quotas/quota-state.service';
+import { ReportPdfService } from './reports/report-pdf.service';
 import { SalesStateService } from './sales/sales-state.service';
+
+vi.mock('@capacitor/app', () => ({
+  App: { exitApp: vi.fn().mockResolvedValue(undefined) },
+}));
 
 @Component({ standalone: true, template: '' })
 class HomeRouteStubComponent {}
@@ -17,6 +24,7 @@ class HomeRouteStubComponent {}
 describe('AppComponent', () => {
   let dismissedRole: string;
   let createAlert: ReturnType<typeof vi.fn>;
+  let createToast: ReturnType<typeof vi.fn>;
   let closeMenu: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
@@ -26,6 +34,7 @@ describe('AppComponent', () => {
       onDidDismiss: vi.fn().mockImplementation(async () => ({ role: dismissedRole })),
     };
     createAlert = vi.fn().mockResolvedValue(alert);
+    createToast = vi.fn().mockResolvedValue({ present: vi.fn().mockResolvedValue(undefined) });
     closeMenu = vi.fn().mockResolvedValue(true);
 
     await TestBed.configureTestingModule({
@@ -38,8 +47,13 @@ describe('AppComponent', () => {
         provideIonicAngular({ mode: 'md' }),
         { provide: AlertController, useValue: { create: createAlert } },
         { provide: MenuController, useValue: { close: closeMenu } },
+        { provide: ToastController, useValue: { create: createToast } },
       ],
     }).compileComponents();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should create the app', () => {
@@ -86,6 +100,8 @@ describe('AppComponent', () => {
 
   it('confirms closing the journey and clears sales, quotas, observations, and journey data', async () => {
     dismissedRole = 'destructive';
+    vi.spyOn(Capacitor, 'getPlatform').mockReturnValue('android');
+    const exitApp = vi.spyOn(App, 'exitApp').mockImplementation(async () => undefined);
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
@@ -104,23 +120,28 @@ describe('AppComponent', () => {
     salesState.adjustQuantity('test-product', 1);
     const quotaState = TestBed.inject(QuotaStateService);
     await quotaState.initialize();
-    await quotaState.configureTotals(25, 10);
+    await quotaState.configureTotals(25, 10, 0);
     quotaState.setProductQuota('test-product', 10);
     quotaState.setManualTotal('aguardiente', 25);
     const observations = TestBed.inject(ObservationsService);
     observations.addObservation('Novedad de prueba');
+    const downloadPdf = vi
+      .spyOn(TestBed.inject(ReportPdfService), 'downloadPdf')
+      .mockImplementation(async () => undefined);
     fixture.detectChanges();
 
     (fixture.nativeElement.querySelector('.menu-footer ion-button') as HTMLElement).click();
-    await vi.waitFor(() => expect(journeyData.hasData()).toBe(false));
+    await vi.waitFor(() => expect(closeMenu).toHaveBeenCalledOnce());
     fixture.detectChanges();
 
+    expect(downloadPdf).toHaveBeenCalledOnce();
+    expect(downloadPdf.mock.calls[0][1]).toContain('Cierre-Final');
+    expect(exitApp).toHaveBeenCalledOnce();
     expect(salesState.quantities()).toEqual({});
     expect(quotaState.totals()['aguardiente']).toBe(0);
     expect(observations.observations()).toEqual([]);
+    expect(journeyData.hasData()).toBe(false);
     expect(fixture.nativeElement.querySelector('app-journey-onboarding')).not.toBeNull();
-    expect(TestBed.inject(Router).url).toBe('/folder/Inicio');
-    expect(closeMenu).toHaveBeenCalledOnce();
   });
 
   it('keeps the active journey intact when close is canceled', async () => {
@@ -140,7 +161,7 @@ describe('AppComponent', () => {
     salesState.adjustQuantity('test-product', 1);
     const quotaState = TestBed.inject(QuotaStateService);
     await quotaState.initialize();
-    await quotaState.configureTotals(25, 10);
+    await quotaState.configureTotals(25, 10, 0);
     fixture.detectChanges();
 
     (fixture.nativeElement.querySelector('.menu-footer ion-button') as HTMLElement).click();
@@ -170,5 +191,37 @@ describe('AppComponent', () => {
 
     expect(fixture.nativeElement.querySelector('app-journey-onboarding')).toBeNull();
     expect(fixture.nativeElement.querySelector('app-quota-onboarding')).not.toBeNull();
+  });
+
+  it('shows an automatically dismissed toast after closing on iOS', async () => {
+    dismissedRole = 'destructive';
+    vi.spyOn(Capacitor, 'getPlatform').mockReturnValue('ios');
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const journeyData = TestBed.inject(JourneyDataService);
+    await journeyData.initialize();
+    await journeyData.startJourney({
+      advisorName: 'Brian Tracy',
+      advisorCode: 'AS-12',
+      salesPointName: 'Tienda Central',
+      salesPointCode: '',
+      city: '',
+    });
+    await TestBed.inject(QuotaStateService).initialize();
+    vi.spyOn(TestBed.inject(ReportPdfService), 'downloadPdf').mockResolvedValue(undefined);
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.menu-footer ion-button') as HTMLElement).click();
+    await vi.waitFor(() => expect(createToast).toHaveBeenCalledOnce(), { timeout: 2000 });
+
+    expect(createToast).toHaveBeenCalledWith({
+      message: 'PDF de cierre descargado. La jornada se reinició correctamente.',
+      duration: 3500,
+      position: 'bottom',
+      color: 'success',
+    });
+    expect(fixture.nativeElement.querySelector('app-journey-onboarding')).not.toBeNull();
+    expect(TestBed.inject(Router).url).toBe('/folder/Inicio');
   });
 });

@@ -46,12 +46,12 @@ describe('SalesCatalogComponent', () => {
       },
       {
         category: 'Ron',
-        family: 'Ron joven',
+        family: 'Ron Medellín Añejo 3 Años',
         volumes: ['2000 ml', '1000 ml', '1050 ml', '750 ml', '375 ml', '260 ml'],
       },
       {
-        category: 'Ron especializado',
-        family: 'Ron Medellín',
+        category: 'Ron de especialidad',
+        family: 'Ron Medellín Especializado',
         volumes: ['750 ml', '375 ml', '750 ml', '375 ml', '750 ml', '750 ml'],
       },
     ];

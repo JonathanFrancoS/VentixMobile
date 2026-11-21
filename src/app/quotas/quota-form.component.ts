@@ -44,6 +44,21 @@ export class QuotaFormComponent {
     return this.editingTotals()[id] ?? false;
   }
 
+  protected totalsForSection(section: QuotaSection): { id: string; label: string }[] {
+    if (section.id === 'aguardiente') {
+      return [{ id: 'aguardiente', label: 'Total Aguardientes' }];
+    }
+
+    if (this.quotaState.hasLegacyCombinedRonQuota()) {
+      return [{ id: 'ron-combined', label: 'Total Rones (jornada anterior)' }];
+    }
+
+    return [
+      { id: 'ron-young', label: 'Total Ron Medellín joven' },
+      { id: 'ron-specialized', label: 'Total Ron Medellín especializado' },
+    ];
+  }
+
   protected toggleProductEdit(productId: string): void {
     this.editingProducts.update((editing) => ({ ...editing, [productId]: !editing[productId] }));
   }

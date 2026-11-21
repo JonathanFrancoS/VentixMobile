@@ -2,6 +2,7 @@ export type SalesProduct = {
   id: string;
   name: string;
   volume: string;
+  volumeMl: number;
   image: string;
 };
 
@@ -52,6 +53,7 @@ function createFamily(
       id: `${id}-${index}`,
       name: productName,
       volume,
+      volumeMl: Number.parseInt(volume, 10),
       image,
     })),
   };

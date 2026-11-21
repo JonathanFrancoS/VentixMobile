@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import {
@@ -19,6 +20,7 @@ import {
   IonRouterOutlet,
   AlertController,
   MenuController,
+  ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -39,11 +41,12 @@ import {
 import { filter, take } from 'rxjs';
 
 import { JourneyDataService } from './journey-data/journey-data.service';
+import { JourneyLifecycleService } from './journey-data/journey-lifecycle.service';
 import { JourneyOnboardingComponent } from './journey-data/journey-onboarding.component';
-import { ObservationsService } from './observations/observations.service';
 import { QuotaOnboardingComponent } from './quotas/quota-onboarding.component';
 import { QuotaStateService } from './quotas/quota-state.service';
-import { SalesStateService } from './sales/sales-state.service';
+import { CommercialReportService } from './reports/commercial-report.service';
+import { ReportPdfService } from './reports/report-pdf.service';
 
 @Component({
   selector: 'app-root',
@@ -91,11 +94,13 @@ export class AppComponent {
   protected readonly closingJourney = signal(false);
   private readonly router = inject(Router);
   private readonly journeyData = inject(JourneyDataService);
+  private readonly journeyLifecycle = inject(JourneyLifecycleService);
   private readonly alertController = inject(AlertController);
   private readonly menuController = inject(MenuController);
-  private readonly salesState = inject(SalesStateService);
+  private readonly toastController = inject(ToastController);
   private readonly quotaState = inject(QuotaStateService);
-  private readonly observationsService = inject(ObservationsService);
+  private readonly reportService = inject(CommercialReportService);
+  private readonly reportPdfService = inject(ReportPdfService);
   private readonly splashStartedAt = Date.now();
   private nativeSplashFallback: ReturnType<typeof setTimeout> | undefined;
   private splashDismissalStarted = false;
@@ -164,13 +169,21 @@ export class AppComponent {
     }
 
     this.closingJourney.set(true);
+    let pdfDownloaded = false;
+    let journeyClosed = false;
+    let closeToastMessage: string | undefined;
     try {
+      const platform = Capacitor.getPlatform();
       const confirmation = await this.alertController.create({
         header: 'Cerrar jornada',
-        message: 'Se borrarán las ventas, cuotas, observaciones y datos de esta jornada. ¿Deseas continuar?',
+        message: `Se descargará el PDF de cierre final y después se borrarán las ventas, cuotas, observaciones y datos de esta jornada. ${
+          platform === 'android'
+            ? 'La aplicación se cerrará al terminar.'
+            : 'En iOS o navegador volverás al inicio; no se permite cerrar la aplicación automáticamente.'
+        } ¿Deseas continuar?`,
         buttons: [
           { text: 'Cancelar', role: 'cancel' },
-          { text: 'Cerrar jornada', role: 'destructive' },
+          { text: 'Descargar PDF y cerrar', role: 'destructive' },
         ],
       });
       await confirmation.present();
@@ -179,27 +192,41 @@ export class AppComponent {
         return;
       }
 
-      await Promise.all([this.journeyData.initialize(), this.quotaState.initialize()]);
-      await this.quotaState.reset();
-      await this.journeyData.createNewJourney();
+      const report = this.reportService.createSnapshot('final');
+      const pdf = await this.reportPdfService.createPdf(report);
+      await this.reportPdfService.downloadPdf(pdf, this.reportPdfService.filename(report));
+      pdfDownloaded = true;
+      await this.journeyLifecycle.closeJourney({ navigateToHome: platform !== 'android' });
+      journeyClosed = true;
+      await this.menuController.close();
+      if (platform === 'android') {
+        try {
+          await App.exitApp();
+          return;
+        } catch (error) {
+          console.error('La jornada se cerró, pero Android no pudo cerrar la aplicación automáticamente.', error);
+          closeToastMessage = 'PDF descargado y jornada reiniciada. Puedes cerrar la aplicación manualmente.';
+        }
+      } else {
+        closeToastMessage = 'PDF de cierre descargado. La jornada se reinició correctamente.';
+      }
     } catch (error) {
       console.error('No se pudo cerrar la jornada actual.', error);
-      await this.showCloseJourneyError();
+      const message = !pdfDownloaded
+        ? 'No se pudo generar o descargar el PDF; la jornada no se borró. Revisa el almacenamiento e inténtalo nuevamente.'
+        : journeyClosed
+          ? 'El PDF se descargó y la jornada se cerró, pero no se pudo terminar el proceso de salida. Puedes cerrar la aplicación manualmente.'
+          : 'El PDF se descargó, pero no se pudo completar el borrado de la jornada. Revisa los datos antes de volver a intentarlo.';
+      await this.showCloseJourneyError(message);
       return;
     } finally {
       this.closingJourney.set(false);
     }
 
-    this.salesState.reset();
-    this.quotaState.reset();
-    this.observationsService.reset();
-
-    try {
-      await this.router.navigateByUrl('/folder/Inicio');
-    } catch (error) {
-      console.error('No se pudo volver a Inicio después de cerrar la jornada.', error);
+    if (closeToastMessage) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000));
+      await this.showCloseJourneyToast(closeToastMessage);
     }
-    await this.menuController.close();
   }
 
   private async loadJourneyData(): Promise<void> {
@@ -211,13 +238,23 @@ export class AppComponent {
     }
   }
 
-  private async showCloseJourneyError(): Promise<void> {
+  private async showCloseJourneyError(message: string): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'No se pudo cerrar la jornada',
-      message: 'No se pudo completar el cierre. Revisa la configuración de cuotas e inténtalo nuevamente.',
+      header: 'No se pudo completar el cierre',
+      message,
       buttons: ['Entendido'],
     });
     await alert.present();
+  }
+
+  private async showCloseJourneyToast(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3500,
+      position: 'bottom',
+      color: 'success',
+    });
+    await toast.present();
   }
 
   private async dismissSplash(): Promise<void> {

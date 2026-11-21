@@ -26,23 +26,29 @@ describe('QuotaOnboardingComponent', () => {
     await Preferences.remove({ key: 'ventix.quotas.v1' });
   });
 
-  it('saves aggregate aguardiente and rum totals into the quota state', async () => {
+  it('saves independent general quotas for aguardiente, young rum, and specialized rum', async () => {
     const app = fixture.nativeElement as HTMLElement;
     (app.querySelector('.quota-mode-card') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     const aguardientes = app.querySelector('#quota-total-aguardientes') as HTMLInputElement;
-    const rones = app.querySelector('#quota-total-rones') as HTMLInputElement;
+    const ronesJovenes = app.querySelector('#quota-total-ron-joven') as HTMLInputElement;
+    const ronesEspecializados = app.querySelector('#quota-total-ron-especializado') as HTMLInputElement;
     aguardientes.value = '40';
     aguardientes.dispatchEvent(new Event('input', { bubbles: true }));
-    rones.value = '20';
-    rones.dispatchEvent(new Event('input', { bubbles: true }));
+    ronesJovenes.value = '15';
+    ronesJovenes.dispatchEvent(new Event('input', { bubbles: true }));
+    ronesEspecializados.value = '5';
+    ronesEspecializados.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     (app.querySelector('.quota-setup-submit') as HTMLElement).click();
 
     await vi.waitFor(() => expect(quotaState.configured()).toBe(true));
     expect(quotaState.totals()['aguardiente']).toBe(40);
+    expect(quotaState.totals()['ron-young']).toBe(15);
+    expect(quotaState.totals()['ron-specialized']).toBe(5);
     expect(quotaState.totals()['ron-combined']).toBe(20);
+    expect(quotaState.totals()['total']).toBe(60);
     const stored = await Preferences.get({ key: 'ventix.quotas.v1' });
     expect(stored.value).toContain('"configured":true');
   });
@@ -103,6 +109,7 @@ describe('QuotaOnboardingComponent', () => {
     expect(quotaState.productQuotas()[aguardiente.id]).toBe(9);
     expect(quotaState.productQuotas()[ron.id]).toBe(3);
     expect(quotaState.totals()['aguardiente']).toBe(9);
+    expect(quotaState.totals()['ron-young']).toBe(3);
     expect(quotaState.totals()['ron-combined']).toBe(3);
   });
 });

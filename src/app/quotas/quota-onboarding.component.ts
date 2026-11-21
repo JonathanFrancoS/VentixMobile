@@ -39,7 +39,8 @@ export class QuotaOnboardingComponent {
   protected readonly sections = quotaSections;
   protected readonly mode = signal<QuotaMode | null>(null);
   protected readonly totalAguardientes = signal('');
-  protected readonly totalRones = signal('');
+  protected readonly totalRonesJovenes = signal('');
+  protected readonly totalRonesEspecializados = signal('');
   protected readonly productValues = signal(createProductInputs());
   protected readonly errorMessage = signal('');
   protected readonly isSaving = signal(false);
@@ -60,7 +61,7 @@ export class QuotaOnboardingComponent {
     this.errorMessage.set('');
   }
 
-  protected updateTotal(category: 'aguardiente' | 'ron', event: Event): void {
+  protected updateTotal(category: 'aguardiente' | 'ron-joven' | 'ron-especializado', event: Event): void {
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) {
       throw new Error('La cuota total debe ingresarse desde un campo numérico.');
@@ -68,8 +69,10 @@ export class QuotaOnboardingComponent {
 
     if (category === 'aguardiente') {
       this.totalAguardientes.set(input.value);
+    } else if (category === 'ron-joven') {
+      this.totalRonesJovenes.set(input.value);
     } else {
-      this.totalRones.set(input.value);
+      this.totalRonesEspecializados.set(input.value);
     }
     this.errorMessage.set('');
   }
@@ -96,9 +99,10 @@ export class QuotaOnboardingComponent {
 
     if (this.mode() === 'totals') {
       const aguardientes = parseQuota(this.totalAguardientes());
-      const rones = parseQuota(this.totalRones());
-      if (aguardientes === null || rones === null) {
-        this.errorMessage.set('Ingresa un número entero igual o mayor que cero en ambos campos.');
+      const ronesJovenes = parseQuota(this.totalRonesJovenes());
+      const ronesEspecializados = parseQuota(this.totalRonesEspecializados());
+      if (aguardientes === null || ronesJovenes === null || ronesEspecializados === null) {
+        this.errorMessage.set('Ingresa un número entero igual o mayor que cero en los tres campos.');
         return;
       }
     } else if (this.mode() !== 'products') {
@@ -109,7 +113,11 @@ export class QuotaOnboardingComponent {
     this.isSaving.set(true);
     try {
       if (this.mode() === 'totals') {
-        await this.quotaState.configureTotals(Number(this.totalAguardientes()), Number(this.totalRones()));
+        await this.quotaState.configureTotals(
+          Number(this.totalAguardientes()),
+          Number(this.totalRonesJovenes()),
+          Number(this.totalRonesEspecializados()),
+        );
       } else {
         const values: Record<string, number> = {};
         for (const [productId, value] of Object.entries(this.productValues())) {

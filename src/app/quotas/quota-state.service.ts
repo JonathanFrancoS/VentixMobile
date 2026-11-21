@@ -4,7 +4,8 @@ import { Preferences } from '@capacitor/preferences';
 import { salesFamilies } from '../sales/sales-catalog.data';
 
 const aguardienteFamilies = salesFamilies.filter((family) => family.category === 'Aguardiente');
-const ronFamilies = salesFamilies.filter((family) => family.category !== 'Aguardiente');
+const ronYoungFamilies = salesFamilies.filter((family) => family.category === 'Ron');
+const ronSpecializedFamilies = salesFamilies.filter((family) => family.category === 'Ron especializado');
 const STORAGE_KEY = 'ventix.quotas.v1';
 
 type QuotaSnapshot = {
@@ -36,6 +37,10 @@ export class QuotaStateService {
   readonly persistenceError = signal<string | null>(null);
   readonly productQuotas = signal(emptyProductQuotas());
   private readonly manualTotals = signal<Record<string, number>>({});
+  readonly hasLegacyCombinedRonQuota = computed(() => {
+    const totals = this.manualTotals();
+    return Object.hasOwn(totals, 'ron-combined') && !Object.hasOwn(totals, 'ron-young');
+  });
   readonly totals = computed<Record<string, number>>(() => {
     const quotas = this.productQuotas();
     const overrides = this.manualTotals();
@@ -47,11 +52,18 @@ export class QuotaStateService {
     );
     const sumFamilies = (families: typeof salesFamilies): number =>
       families.reduce((sum, family) => sum + familyTotals[family.id], 0);
+    const aguardiente = overrides['aguardiente'] ?? sumFamilies(aguardienteFamilies);
+    const ronYoung = overrides['ron-young'] ?? sumFamilies(ronYoungFamilies);
+    const ronSpecialized = overrides['ron-specialized'] ?? sumFamilies(ronSpecializedFamilies);
+    const ronCombined = this.hasLegacyCombinedRonQuota() ? (overrides['ron-combined'] ?? 0) : ronYoung + ronSpecialized;
 
     return {
       ...familyTotals,
-      aguardiente: overrides['aguardiente'] ?? sumFamilies(aguardienteFamilies),
-      'ron-combined': overrides['ron-combined'] ?? sumFamilies(ronFamilies),
+      aguardiente,
+      'ron-young': ronYoung,
+      'ron-specialized': ronSpecialized,
+      'ron-combined': ronCombined,
+      total: aguardiente + ronCombined,
     };
   });
 
@@ -88,13 +100,14 @@ export class QuotaStateService {
     this.persistCurrentState();
   }
 
-  async configureTotals(aguardiente: number, ron: number): Promise<void> {
+  async configureTotals(aguardiente: number, ronYoung: number, ronSpecialized: number): Promise<void> {
     await this.applyConfiguration({
       version: 1,
       productQuotas: emptyProductQuotas(),
       manualTotals: {
         aguardiente: this.normalize(aguardiente),
-        'ron-combined': this.normalize(ron),
+        'ron-young': this.normalize(ronYoung),
+        'ron-specialized': this.normalize(ronSpecialized),
       },
       configured: true,
     });

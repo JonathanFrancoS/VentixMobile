@@ -1,10 +1,12 @@
 import { Component, input } from '@angular/core';
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent } from '@ionic/angular';
-import { SalesCatalogComponent } from '../sales/sales-catalog.component';
-import { QuotaFormComponent } from '../quotas/quota-form.component';
+
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { JourneyDataFormComponent } from '../journey-data/journey-data-form.component';
 import { ObservationsComponent } from '../observations/observations.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
+import { QuotaFormComponent } from '../quotas/quota-form.component';
+import { CommercialReportComponent } from '../reports/commercial-report.component';
+import { SalesCatalogComponent } from '../sales/sales-catalog.component';
 
 @Component({
   selector: 'app-folder',
@@ -22,6 +24,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
     JourneyDataFormComponent,
     ObservationsComponent,
     DashboardComponent,
+    CommercialReportComponent,
   ],
 })
 export class FolderPage {

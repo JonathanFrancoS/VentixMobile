@@ -1,11 +1,12 @@
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
-import { RouterLink, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { RouterLink, provideRouter } from '@angular/router';
 
 import { JourneyDataService } from '../journey-data/journey-data.service';
 import { QuotaStateService } from '../quotas/quota-state.service';
 import { SalesStateService } from '../sales/sales-state.service';
+
 import { DashboardComponent } from './dashboard.component';
 
 describe('DashboardComponent', () => {
@@ -28,10 +29,10 @@ describe('DashboardComponent', () => {
   });
 
   it('shows live totals including specialized rum and marks performance below 90 percent', () => {
-    quotaState.setProductQuota('antioqueno-verde-0', 10);
+    quotaState.setProductQuota('antioqueno-verde-3', 10);
     quotaState.setProductQuota('ron-5-anos-0', 10);
     for (let count = 0; count < 9; count += 1) {
-      salesState.adjustQuantity('antioqueno-verde-0', 1);
+      salesState.adjustQuantity('antioqueno-verde-3', 1);
     }
     for (let count = 0; count < 4; count += 1) {
       salesState.adjustQuantity('ron-5-anos-0', 1);
@@ -74,7 +75,7 @@ describe('DashboardComponent', () => {
   it('updates commercial family chips and colors completion at the requested thresholds', () => {
     quotaState.setManualTotal('aguardiente', 10);
     for (let count = 0; count < 8; count += 1) {
-      salesState.adjustQuantity('antioqueno-verde-0', 1);
+      salesState.adjustQuantity('antioqueno-verde-3', 1);
     }
     fixture.detectChanges();
 
@@ -82,15 +83,15 @@ describe('DashboardComponent', () => {
     const aguardienteCard = app.querySelector('.commercial-card') as HTMLElement;
     expect(aguardienteCard.querySelector('.commercial-percentage')?.textContent?.trim()).toBe('80%');
     expect(aguardienteCard.classList.contains('commercial-card--warning')).toBe(true);
-    expect(aguardienteCard.textContent).toContain('Verde 24°: 8 vendidas');
-    expect(aguardienteCard.textContent).toContain('Azul: 0 vendidas');
+    expect(aguardienteCard.textContent).toContain('Verde 24°: 8 bot. eq.');
+    expect(aguardienteCard.textContent).toContain('Azul: 0 bot. eq.');
 
-    salesState.adjustQuantity('antioqueno-verde-0', 1);
+    salesState.adjustQuantity('antioqueno-verde-3', 1);
     fixture.detectChanges();
     expect(aguardienteCard.classList.contains('commercial-card--good')).toBe(true);
 
     for (let count = 0; count < 5; count += 1) {
-      salesState.adjustQuantity('antioqueno-verde-0', -1);
+      salesState.adjustQuantity('antioqueno-verde-3', -1);
     }
     fixture.detectChanges();
     expect(aguardienteCard.classList.contains('commercial-card--danger')).toBe(true);

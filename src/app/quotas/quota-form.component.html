@@ -90,49 +90,41 @@
         </ion-card>
       }
 
-      <div class="section-total">
-        <label [for]="'section-total-' + section.id">Total {{ section.name }}</label>
-        <div class="quota-controls">
-          <input
-            [id]="'section-total-' + section.id"
-            type="number"
-            inputmode="numeric"
-            min="0"
-            step="1"
-            placeholder="0"
-            [disabled]="!isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)"
-            [value]="displayValue(total(section.id === 'ron' ? 'ron-combined' : section.id))"
-            [attr.aria-label]="'Total de ' + section.name"
-            (input)="setManualTotal(section.id === 'ron' ? 'ron-combined' : section.id, $event)"
-          />
-          <button
-            class="icon-action edit-action"
-            type="button"
-            [attr.aria-label]="
-              (isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)
-                ? 'Guardar total de '
-                : 'Editar total de ') + section.name
-            "
-            (click)="toggleTotalEdit(section.id === 'ron' ? 'ron-combined' : section.id)"
-          >
-            <ion-icon
-              [name]="
-                isTotalEditing(section.id === 'ron' ? 'ron-combined' : section.id)
-                  ? 'checkmark-outline'
-                  : 'create-outline'
-              "
-            ></ion-icon>
-          </button>
-          <button
-            class="icon-action delete-action"
-            type="button"
-            [attr.aria-label]="'Restablecer total automático de ' + section.name"
-            (click)="resetManualTotal(section.id === 'ron' ? 'ron-combined' : section.id)"
-          >
-            <ion-icon name="trash-outline"></ion-icon>
-          </button>
+      @for (quotaTotal of totalsForSection(section); track quotaTotal.id) {
+        <div class="section-total">
+          <label [for]="'section-total-' + quotaTotal.id">{{ quotaTotal.label }}</label>
+          <div class="quota-controls">
+            <input
+              [id]="'section-total-' + quotaTotal.id"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              placeholder="0"
+              [disabled]="!isTotalEditing(quotaTotal.id)"
+              [value]="displayValue(total(quotaTotal.id))"
+              [attr.aria-label]="quotaTotal.label"
+              (input)="setManualTotal(quotaTotal.id, $event)"
+            />
+            <button
+              class="icon-action edit-action"
+              type="button"
+              [attr.aria-label]="(isTotalEditing(quotaTotal.id) ? 'Guardar ' : 'Editar ') + quotaTotal.label"
+              (click)="toggleTotalEdit(quotaTotal.id)"
+            >
+              <ion-icon [name]="isTotalEditing(quotaTotal.id) ? 'checkmark-outline' : 'create-outline'"></ion-icon>
+            </button>
+            <button
+              class="icon-action delete-action"
+              type="button"
+              [attr.aria-label]="'Restablecer ' + quotaTotal.label"
+              (click)="resetManualTotal(quotaTotal.id)"
+            >
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </section>
   }
   @if (quotaState.persistenceError()) {

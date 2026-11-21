@@ -1,0 +1,432 @@
+<main class="report-page">
+  <header class="report-heading">
+    <p class="report-kicker">Informes de jornada</p>
+    <h1>Informe comercial ejecutivo</h1>
+    <p>Resumen actualizado con las ventas y cuotas registradas.</p>
+  </header>
+
+  <section class="report-identity" aria-labelledby="report-identity-title">
+    <h2 id="report-identity-title">Datos de la jornada</h2>
+    <dl>
+      <div>
+        <dt>Asesor de ventas</dt>
+        <dd>{{ report().journey.advisorName || '—' }}</dd>
+      </div>
+      <div>
+        <dt>Código del asesor</dt>
+        <dd>{{ report().journey.advisorCode || '—' }}</dd>
+      </div>
+      <div>
+        <dt>Punto de venta</dt>
+        <dd>{{ report().journey.salesPointName || '—' }}</dd>
+      </div>
+      @if (report().journey.salesPointCode) {
+        <div>
+          <dt>Código del punto de venta</dt>
+          <dd>{{ report().journey.salesPointCode }}</dd>
+        </div>
+      }
+      @if (report().journey.city) {
+        <div>
+          <dt>Ciudad</dt>
+          <dd>{{ report().journey.city }}</dd>
+        </div>
+      }
+      <div>
+        <dt>Inicio de jornada</dt>
+        <dd>{{ report().journey.startedAt }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="executive-card" aria-labelledby="executive-title">
+    <h2 id="executive-title">Resumen ejecutivo</h2>
+    <div class="executive-grid">
+      <div class="executive-metrics">
+        <article>
+          <span>Cuota asignada</span>
+          <strong>{{ formatNumber(report().totalQuota) }} bot. eq.</strong>
+        </article>
+        <article>
+          <span>Ventas al cierre</span>
+          <strong>{{ formatNumber(report().totalEquivalentBottles) }} bot. eq.</strong>
+          <small
+            >{{ formatNumber(report().totalPhysicalUnits, 0) }} unidades ·
+            {{ formatNumber(report().totalMilliliters, 0) }} ml</small
+          >
+        </article>
+        <article>
+          <span>Efectividad total</span>
+          <strong>{{ formatPercentage(report().totalPercentage) }}</strong>
+        </article>
+        <article>
+          <span>GAP / Brecha</span>
+          <strong
+            [class.gap-positive]="report().gapEquivalentBottles > 0"
+            [class.gap-negative]="report().gapEquivalentBottles < 0"
+          >
+            {{ formatGap(report().gapEquivalentBottles) }}
+          </strong>
+        </article>
+        <article>
+          <span>Volumen faltante</span>
+          <strong>{{ formatNumber(report().missingMilliliters, 0) }} ml</strong>
+        </article>
+      </div>
+
+      <div class="balance-card">
+        <div
+          class="balance-ring"
+          [style.--progress]="progress(report().totalPercentage) + '%'"
+          role="img"
+          [attr.aria-label]="'Balance global: ' + formatPercentage(report().totalPercentage)"
+        >
+          <div class="balance-center">
+            <strong>{{ formatPercentage(report().totalPercentage) }}</strong>
+            <span>Balance global</span>
+          </div>
+        </div>
+        <p>
+          Se vendieron <strong>{{ formatNumber(report().totalEquivalentBottles) }}</strong> de
+          <strong>{{ formatNumber(report().totalQuota) }}</strong> botellas equivalentes del turno.
+        </p>
+        <div class="balance-legend">
+          <span
+            ><ion-icon name="checkmark-circle-outline"></ion-icon
+            >{{ formatNumber(report().totalEquivalentBottles) }} logradas</span
+          >
+          <span
+            ><ion-icon name="alert-circle-outline"></ion-icon
+            >{{ formatNumber(pendingEquivalent(report())) }} faltantes</span
+          >
+        </div>
+      </div>
+    </div>
+    @if (report().legacyCombinedRonQuota !== null) {
+      <p class="legacy-quota-note">
+        Esta jornada conserva su cuota histórica combinada de rones ({{
+          formatNumber(report().legacyCombinedRonQuota ?? 0)
+        }}
+        bot. eq.); no se distribuye entre las familias.
+      </p>
+    }
+  </section>
+
+  <section class="category-section" aria-labelledby="category-title">
+    <h2 id="category-title">Desglose por categoría y familia</h2>
+    @for (category of report().categories; track category.id) {
+      <article
+        class="category-card"
+        [class.category-card--met]="categoryTone(category) === 'met'"
+        [class.category-card--pending]="categoryTone(category) === 'pending'"
+        [class.category-card--unconfigured]="categoryTone(category) === 'unconfigured'"
+      >
+        <header>
+          <ion-icon [name]="statusIcon(category)" aria-hidden="true"></ion-icon>
+          <h3>{{ category.name }}</h3>
+          <strong>{{ formatPercentage(category.percentage) }}</strong>
+        </header>
+        <p>
+          {{ formatNumber(category.equivalentBottles) }} / {{ formatNumber(category.quota) }} bot. eq.
+          <span
+            >({{ formatNumber(category.physicalUnits, 0) }} unidades ·
+            {{ formatNumber(category.milliliters, 0) }} ml)</span
+          >
+        </p>
+        <div
+          class="category-progress"
+          role="progressbar"
+          [attr.aria-label]="'Cumplimiento de ' + category.name"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="progress(category.percentage)"
+        >
+          <span [style.width.%]="progress(category.percentage)"></span>
+        </div>
+      </article>
+    }
+  </section>
+
+  <section class="physical-section" aria-labelledby="physical-title">
+    <h2 id="physical-title">Desglose físico</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Referencia</th>
+            <th scope="col">Presentación</th>
+            <th scope="col">Unidades vendidas</th>
+            <th scope="col">Mililitros</th>
+            <th scope="col">Botellas eq.</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reference of report().references; track reference.reference + reference.presentation) {
+            <tr>
+              <td>{{ reference.reference }}</td>
+              <td data-label="Presentación">{{ reference.presentation }}</td>
+              <td data-label="Unidades vendidas">{{ formatNumber(reference.physicalUnits, 0) }}</td>
+              <td data-label="Mililitros">{{ formatNumber(reference.milliliters, 0) }} ml</td>
+              <td data-label="Botellas equivalentes">{{ formatNumber(reference.equivalentBottles) }}</td>
+            </tr>
+          }
+          <tr class="physical-total-row">
+            <td>Totales</td>
+            <td data-label="Presentación">—</td>
+            <td data-label="Unidades vendidas">{{ formatNumber(report().totalPhysicalUnits, 0) }}</td>
+            <td data-label="Mililitros">{{ formatNumber(report().totalMilliliters, 0) }} ml</td>
+            <td data-label="Botellas equivalentes">{{ formatNumber(report().totalEquivalentBottles) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="observations-section" aria-labelledby="observations-title">
+    <h2 id="observations-title">Observaciones y evidencias</h2>
+    @if (report().observations.length === 0) {
+      <p>No se registraron observaciones para esta jornada.</p>
+    } @else {
+      @for (observation of report().observations; track observation.id) {
+        <article class="observation-entry">
+          <time>{{ formatDate(observation.createdAt) }}</time>
+          <p>{{ observation.text }}</p>
+          @if (observation.photos.length > 0) {
+            <div class="observation-photos">
+              @for (photo of observation.photos; track photo.id) {
+                <figure>
+                  <img [src]="photo.dataUrl" [alt]="photo.name" />
+                  <figcaption>{{ photo.name }}</figcaption>
+                </figure>
+              }
+            </div>
+          }
+        </article>
+      }
+    }
+  </section>
+
+  <section class="report-actions" aria-label="Exportar informe">
+    <ion-button expand="block" fill="outline" [disabled]="isBusy()" (click)="togglePreview()">
+      <ion-icon slot="start" name="eye-outline"></ion-icon>
+      {{ previewSnapshot() ? 'Cerrar vista previa PDF' : 'Previsualizar cierre final en PDF' }}
+    </ion-button>
+    <ion-button expand="block" [disabled]="isBusy()" (click)="togglePartialPreview()">
+      <ion-icon slot="start" name="eye-outline"></ion-icon>
+      Previsualizar informe parcial PDF
+    </ion-button>
+  </section>
+
+  @if (previewSnapshot(); as preview) {
+    <ion-modal
+      class="report-preview-modal"
+      [isOpen]="true"
+      [backdropDismiss]="false"
+      aria-labelledby="pdf-preview-title"
+      (didDismiss)="closePreview()"
+    >
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title id="pdf-preview-title">Previsualización del PDF</ion-title>
+            <ion-button slot="end" fill="clear" [disabled]="isBusy()" (click)="closePreview()"> Cerrar </ion-button>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="report-preview-content">
+          <article class="pdf-paper" [attr.aria-label]="'Contenido del ' + preview.title">
+            <div class="pdf-paper-heading">
+              <div>
+                <p>Ventix Mobile</p>
+                <h3>{{ preview.title }}</h3>
+              </div>
+              <time>{{ formatDate(preview.generatedAt) }}</time>
+            </div>
+
+            <section>
+              <h4>Datos de la jornada</h4>
+              <dl class="pdf-paper-identity">
+                <div>
+                  <dt>Asesor</dt>
+                  <dd>{{ preview.journey.advisorName || '—' }}</dd>
+                </div>
+                <div>
+                  <dt>Código del asesor</dt>
+                  <dd>{{ preview.journey.advisorCode || '—' }}</dd>
+                </div>
+                <div>
+                  <dt>Punto de venta</dt>
+                  <dd>{{ preview.journey.salesPointName || '—' }}</dd>
+                </div>
+                @if (preview.journey.salesPointCode) {
+                  <div>
+                    <dt>Código del punto</dt>
+                    <dd>{{ preview.journey.salesPointCode }}</dd>
+                  </div>
+                }
+                @if (preview.journey.city) {
+                  <div>
+                    <dt>Ciudad</dt>
+                    <dd>{{ preview.journey.city }}</dd>
+                  </div>
+                }
+                <div>
+                  <dt>Inicio de jornada</dt>
+                  <dd>{{ preview.journey.startedAt }}</dd>
+                </div>
+                @if (preview.finishedAt) {
+                  <div>
+                    <dt>Finalización de jornada</dt>
+                    <dd>{{ formatDate(preview.finishedAt) }}</dd>
+                  </div>
+                }
+              </dl>
+            </section>
+
+            <section>
+              <h4>Resumen ejecutivo</h4>
+              <div class="pdf-paper-metrics">
+                <p>
+                  <span>Cuota asignada</span><strong>{{ formatNumber(preview.totalQuota) }} bot. eq.</strong>
+                </p>
+                <p>
+                  <span>Ventas</span><strong>{{ formatNumber(preview.totalEquivalentBottles) }} bot. eq.</strong>
+                </p>
+                <p>
+                  <span>Efectividad</span><strong>{{ formatPercentage(preview.totalPercentage) }}</strong>
+                </p>
+                <p>
+                  <span>GAP / Brecha</span><strong>{{ formatGap(preview.gapEquivalentBottles) }}</strong>
+                </p>
+                <p>
+                  <span>Volumen vendido</span><strong>{{ formatNumber(preview.totalMilliliters, 0) }} ml</strong>
+                </p>
+                <p>
+                  <span>Volumen faltante</span><strong>{{ formatNumber(preview.missingMilliliters, 0) }} ml</strong>
+                </p>
+              </div>
+              <div class="pdf-paper-balance">
+                <div class="pdf-paper-ring" [style.--progress]="progress(preview.totalPercentage) + '%'">
+                  <strong>{{ formatPercentage(preview.totalPercentage) }}</strong>
+                </div>
+                <div>
+                  <h5>Balance global</h5>
+                  <p>
+                    Se vendieron {{ formatNumber(preview.totalEquivalentBottles) }} de
+                    {{ formatNumber(preview.totalQuota) }} botellas equivalentes.
+                  </p>
+                  <p>
+                    {{ formatNumber(pendingEquivalent(preview)) }} faltantes ·
+                    {{ formatNumber(preview.totalPhysicalUnits, 0) }} unidades físicas.
+                  </p>
+                </div>
+              </div>
+              @if (preview.legacyCombinedRonQuota !== null) {
+                <p class="legacy-quota-note">
+                  Cuota histórica combinada de rones: {{ formatNumber(preview.legacyCombinedRonQuota) }} bot. eq.
+                </p>
+              }
+            </section>
+
+            <section>
+              <h4>Desglose por categoría y familia</h4>
+              @for (category of preview.categories; track category.id) {
+                <p>
+                  {{ category.name }}: {{ formatNumber(category.equivalentBottles) }}/{{
+                    formatNumber(category.quota)
+                  }}
+                  bot. eq. ({{ formatPercentage(category.percentage) }})
+                </p>
+              }
+            </section>
+
+            <section>
+              <h4>Desglose físico</h4>
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Referencia</th>
+                      <th scope="col">Presentación</th>
+                      <th scope="col">Unidades</th>
+                      <th scope="col">Mililitros</th>
+                      <th scope="col">Bot. eq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (reference of preview.references; track reference.reference + reference.presentation) {
+                      <tr>
+                        <td>{{ reference.reference }}</td>
+                        <td data-label="Presentación">{{ reference.presentation }}</td>
+                        <td data-label="Unidades">{{ formatNumber(reference.physicalUnits, 0) }}</td>
+                        <td data-label="Mililitros">{{ formatNumber(reference.milliliters, 0) }} ml</td>
+                        <td data-label="Botellas equivalentes">{{ formatNumber(reference.equivalentBottles) }}</td>
+                      </tr>
+                    }
+                    <tr class="physical-total-row">
+                      <td>Totales</td>
+                      <td data-label="Presentación">—</td>
+                      <td data-label="Unidades">{{ formatNumber(preview.totalPhysicalUnits, 0) }}</td>
+                      <td data-label="Mililitros">{{ formatNumber(preview.totalMilliliters, 0) }} ml</td>
+                      <td data-label="Botellas equivalentes">
+                        {{ formatNumber(preview.totalEquivalentBottles) }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section>
+              <h4>Observaciones y evidencias</h4>
+              @if (preview.observations.length === 0) {
+                <p>Sin observaciones registradas.</p>
+              } @else {
+                @for (observation of preview.observations; track observation.id) {
+                  <p>{{ formatDate(observation.createdAt) }} · {{ observation.text }}</p>
+                  <div class="observation-photos">
+                    @for (photo of observation.photos; track photo.id) {
+                      <figure>
+                        <img [src]="photo.dataUrl" [alt]="photo.name" />
+                        <figcaption>{{ photo.name }}</figcaption>
+                      </figure>
+                    }
+                  </div>
+                }
+              }
+            </section>
+            @if (errorMessage()) {
+              <p class="report-error" role="alert">{{ errorMessage() }}</p>
+            }
+          </article>
+        </ion-content>
+        <ion-footer class="report-preview-footer">
+          <div class="report-preview-actions">
+            @if (preview.kind === 'final') {
+              <ion-button expand="block" fill="outline" [disabled]="isBusy()" (click)="downloadFinalReport()">
+                <ion-icon slot="start" name="download-outline"></ion-icon>
+                Descargar PDF
+              </ion-button>
+              <ion-button expand="block" [disabled]="isBusy()" (click)="shareFinalReport()">
+                <ion-icon slot="start" name="share-outline"></ion-icon>
+                Compartir PDF
+              </ion-button>
+            } @else {
+              <ion-button expand="block" fill="outline" [disabled]="isBusy()" (click)="downloadPartialReport()">
+                <ion-icon slot="start" name="download-outline"></ion-icon>
+                Descargar PDF parcial
+              </ion-button>
+              <ion-button expand="block" [disabled]="isBusy()" (click)="sharePartialReport()">
+                <ion-icon slot="start" name="share-outline"></ion-icon>
+                Compartir PDF parcial
+              </ion-button>
+            }
+          </div>
+        </ion-footer>
+      </ng-template>
+    </ion-modal>
+  }
+
+  @if (errorMessage() && !previewSnapshot()) {
+    <p class="report-error" role="alert">{{ errorMessage() }}</p>
+  }
+</main>

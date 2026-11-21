@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -34,13 +34,21 @@ const commercialGroupDefinitions = [
     ],
   },
   {
-    id: 'rones',
-    title: 'Rones Medellín',
-    subtitle: 'Dorado, Añejo y Especializados',
-    quotaKey: 'ron-combined',
+    id: 'ron-young',
+    title: 'Ron Medellín joven',
+    subtitle: 'Dorado y Añejo 3 años',
+    quotaKey: 'ron-young',
     variants: [
       { familyId: 'ron-dorado', label: 'Dorado' },
       { familyId: 'ron-3 Años', label: 'Añejo 3 años' },
+    ],
+  },
+  {
+    id: 'ron-specialized',
+    title: 'Ron Medellín especializado',
+    subtitle: '5, 8, 12 y 19 años',
+    quotaKey: 'ron-specialized',
+    variants: [
       { familyId: 'ron-5-anos', label: '5 años' },
       { familyId: 'ron-8-anos', label: '8 años' },
       { familyId: 'ron-12-anos', label: '12 años' },
@@ -56,12 +64,15 @@ const commercialGroupDefinitions = [
   imports: [RouterLink, IonButton, IonIcon],
 })
 export class DashboardComponent {
+  protected readonly journeyData = inject(JourneyDataService);
+  private readonly quotaState = inject(QuotaStateService);
+  private readonly salesState = inject(SalesStateService);
   private readonly refreshRevision = signal(0);
   readonly summary = computed(() => {
     this.refreshRevision();
     const quotas = this.quotaState.totals();
     const sales = this.salesState.totals();
-    const totalQuota = quotas['aguardiente'] + quotas['ron-combined'];
+    const totalQuota = quotas['total'];
     const percentage = totalQuota > 0 ? Math.round((sales.total / totalQuota) * 100) : 0;
     const tone: PerformanceTone = totalQuota === 0 ? 'empty' : percentage < 90 ? 'low' : 'good';
 
@@ -101,11 +112,16 @@ export class DashboardComponent {
     this.refreshRevision();
     const quotas = this.quotaState.totals();
     const sales = this.salesState.totals();
-    const quantities = this.salesState.quantities();
+    const productTotals = this.salesState.productTotals();
 
     return commercialGroupDefinitions.map((group) => {
       const quota = quotas[group.quotaKey];
-      const sold = group.id === 'aguardiente' ? sales.aguardiente : sales.ron;
+      const sold =
+        group.id === 'aguardiente'
+          ? sales.aguardiente
+          : group.id === 'ron-young'
+            ? sales.ronYoung
+            : sales.ronSpecialized;
       const rawPercentage = quota > 0 ? (sold / quota) * 100 : 0;
       const percentage = Math.round(rawPercentage);
       const tone: CommercialTone = rawPercentage > 80 ? 'good' : rawPercentage >= 70 ? 'warning' : 'danger';
@@ -120,7 +136,7 @@ export class DashboardComponent {
         variants: group.variants.map((variant) => {
           const family = salesFamilies.find((item) => item.id === variant.familyId);
           const variantSold =
-            family?.products.reduce((sum, product) => sum + (quantities[product.id] ?? 0), 0) ?? 0;
+            family?.products.reduce((sum, product) => sum + productTotals[product.id].equivalentBottles, 0) ?? 0;
 
           return { ...variant, sold: variantSold };
         }),
@@ -128,11 +144,7 @@ export class DashboardComponent {
     });
   });
 
-  constructor(
-    protected readonly journeyData: JourneyDataService,
-    private readonly quotaState: QuotaStateService,
-    private readonly salesState: SalesStateService,
-  ) {
+  constructor() {
     addIcons({
       calendarOutline,
       documentTextOutline,
@@ -151,7 +163,7 @@ export class DashboardComponent {
   }
 
   protected formatNumber(value: number): string {
-    return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(Math.abs(value));
+    return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 }).format(Math.abs(value));
   }
 
   protected pendingText(value: number): string {

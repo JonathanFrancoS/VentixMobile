@@ -55,4 +55,12 @@ describe('FolderPage', () => {
     const app = fixture.nativeElement as HTMLElement;
     expect(app.querySelector('app-observations')).not.toBeNull();
   });
+
+  it('shows the commercial report on the reports page', () => {
+    fixture.componentRef.setInput('folder', 'Informes');
+    fixture.detectChanges();
+
+    const app = fixture.nativeElement as HTMLElement;
+    expect(app.querySelector('app-commercial-report')).not.toBeNull();
+  });
 });

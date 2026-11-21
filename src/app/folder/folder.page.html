@@ -24,6 +24,8 @@
   <app-observations></app-observations>
   } @else if (folder() === 'Inicio') {
   <app-dashboard></app-dashboard>
+  } @else if (folder() === 'Informes') {
+  <app-commercial-report></app-commercial-report>
   } @else {
   <div id="container">
     <strong class="capitalize">{{ folder() }}</strong>

@@ -368,6 +368,580 @@ app-dashboard .commercial-chip {
   font-weight: 600;
 }
 
+app-commercial-report .report-page {
+  display: grid;
+  max-width: 900px;
+  gap: 14px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+app-sales-catalog .sales-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid var(--app-color-outline);
+  border-radius: 12px;
+  background: var(--app-color-surface);
+  text-align: center;
+}
+
+app-sales-catalog .sales-summary div {
+  display: grid;
+  gap: 3px;
+}
+
+app-sales-catalog .sales-summary span,
+app-sales-catalog .product-calculation {
+  color: var(--app-color-muted);
+  font-size: 10px;
+}
+
+app-sales-catalog .sales-summary strong {
+  color: var(--app-color-navy);
+  font-size: 12px;
+}
+
+app-sales-catalog .product-calculation {
+  margin: 0;
+  text-align: center;
+}
+
+app-commercial-report .report-heading,
+app-commercial-report .report-identity,
+app-commercial-report .executive-card,
+app-commercial-report .category-card,
+app-commercial-report .physical-section,
+app-commercial-report .observations-section {
+  padding: 14px;
+  border: 1px solid var(--app-color-outline);
+  border-radius: var(--app-radius-card);
+  background: var(--app-color-surface);
+  box-shadow: var(--app-shadow-card);
+}
+
+app-commercial-report .report-heading {
+  background: var(--app-color-navy);
+  color: #ffffff;
+}
+
+app-commercial-report .report-heading h1,
+app-commercial-report .report-heading p {
+  margin: 0;
+  color: #ffffff;
+}
+
+app-commercial-report .report-heading h1 {
+  margin: 4px 0;
+  font-size: 21px;
+}
+
+app-commercial-report .report-heading p {
+  font-size: 12px;
+}
+
+app-commercial-report .report-kicker {
+  opacity: 0.78;
+}
+
+app-commercial-report .report-page h2 {
+  margin: 0 0 10px;
+  color: var(--app-color-navy);
+  font-size: 16px;
+}
+
+app-commercial-report .report-identity dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+app-commercial-report .report-identity dl div {
+  min-width: 0;
+}
+
+app-commercial-report .report-identity dt,
+app-commercial-report .executive-metrics span {
+  color: var(--app-color-muted);
+  font-size: 11px;
+}
+
+app-commercial-report .report-identity dd {
+  overflow-wrap: anywhere;
+  margin: 2px 0 0;
+  color: var(--app-color-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+app-commercial-report .executive-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.8fr);
+  align-items: center;
+  gap: 14px;
+}
+
+app-commercial-report .executive-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+app-commercial-report .executive-metrics article {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+  border-radius: 10px;
+  background: var(--app-color-surface-subtle);
+}
+
+app-commercial-report .executive-metrics strong {
+  color: var(--app-color-navy);
+  font-size: 14px;
+}
+
+app-commercial-report .executive-metrics small {
+  color: var(--app-color-muted);
+  font-size: 10px;
+}
+
+app-commercial-report .executive-metrics .gap-positive {
+  color: var(--app-color-success-dark);
+}
+
+app-commercial-report .executive-metrics .gap-negative {
+  color: var(--app-color-danger-dark);
+}
+
+app-commercial-report .balance-card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+app-commercial-report .balance-ring {
+  --progress: 0%;
+  display: grid;
+  width: 142px;
+  height: 142px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--app-color-success-dark) var(--progress), var(--app-color-outline) 0);
+}
+
+app-commercial-report .balance-center {
+  display: grid;
+  width: 112px;
+  height: 112px;
+  align-content: center;
+  justify-items: center;
+  border-radius: 50%;
+  background: var(--app-color-surface);
+}
+
+app-commercial-report .balance-center strong {
+  color: var(--app-color-navy);
+  font-size: 25px;
+}
+
+app-commercial-report .balance-center span,
+app-commercial-report .balance-card p {
+  color: var(--app-color-muted);
+  font-size: 11px;
+}
+
+app-commercial-report .balance-card p {
+  margin: 0;
+}
+
+app-commercial-report .balance-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  color: var(--app-color-ink);
+  font-size: 11px;
+}
+
+app-commercial-report .balance-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+app-commercial-report .balance-legend ion-icon {
+  color: var(--app-color-success-dark);
+}
+
+app-commercial-report .balance-legend span + span ion-icon {
+  color: var(--app-color-warning-dark);
+}
+
+app-commercial-report .legacy-quota-note {
+  margin: 12px 0 0;
+  color: var(--app-color-warning-dark);
+  font-size: 11px;
+}
+
+app-commercial-report .category-section {
+  display: grid;
+  gap: 8px;
+}
+
+app-commercial-report .category-section > h2 {
+  margin-bottom: 0;
+}
+
+app-commercial-report .category-card {
+  --report-color: var(--app-color-warning-dark);
+  --report-surface: var(--app-color-warning-surface);
+  padding: 12px;
+}
+
+app-commercial-report .category-card--met {
+  --report-color: var(--app-color-success-dark);
+  --report-surface: var(--app-color-success-surface);
+}
+
+app-commercial-report .category-card--unconfigured {
+  --report-color: var(--app-color-muted);
+  --report-surface: var(--app-color-surface-subtle);
+}
+
+app-commercial-report .category-card header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+app-commercial-report .category-card header ion-icon,
+app-commercial-report .category-card header strong {
+  color: var(--report-color);
+}
+
+app-commercial-report .category-card h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+}
+
+app-commercial-report .category-card header strong {
+  font-size: 13px;
+}
+
+app-commercial-report .category-card p {
+  margin: 8px 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+app-commercial-report .category-card p span {
+  color: var(--app-color-muted);
+  font-weight: 400;
+}
+
+app-commercial-report .category-progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-outline);
+}
+
+app-commercial-report .category-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--report-color);
+}
+
+app-commercial-report .table-scroll {
+  overflow-x: auto;
+}
+
+app-commercial-report table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+app-commercial-report th,
+app-commercial-report td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--app-color-outline);
+  text-align: left;
+}
+
+app-commercial-report th {
+  color: var(--app-color-navy);
+  font-size: 10px;
+}
+
+app-commercial-report .physical-total-row,
+ion-modal.report-preview-modal .physical-total-row {
+  background: var(--app-color-surface-subtle);
+  color: var(--app-color-navy);
+  font-weight: 700;
+}
+
+app-commercial-report .observation-entry {
+  padding: 10px 0;
+  border-top: 1px solid var(--app-color-outline);
+}
+
+app-commercial-report .observation-entry time,
+app-commercial-report .observation-photos figcaption {
+  color: var(--app-color-muted);
+  font-size: 10px;
+}
+
+app-commercial-report .observation-entry p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+app-commercial-report .observation-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+app-commercial-report .observation-photos figure {
+  width: 96px;
+  margin: 0;
+}
+
+app-commercial-report .observation-photos img {
+  width: 96px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+app-commercial-report .observation-photos figcaption {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+app-commercial-report .report-actions {
+  display: grid;
+  gap: 8px;
+}
+
+ion-modal.report-preview-modal {
+  --width: min(96vw, 840px);
+  --height: min(94vh, 960px);
+  --border-radius: 18px;
+}
+
+ion-modal.report-preview-modal::part(content) {
+  display: flex;
+  flex-direction: column;
+}
+
+ion-modal.report-preview-modal ion-toolbar {
+  --background: var(--app-color-surface);
+  --color: var(--app-color-navy);
+}
+
+ion-modal.report-preview-modal .report-preview-content {
+  --background: var(--app-color-surface-subtle);
+  flex: 1 1 auto;
+}
+
+ion-modal.report-preview-modal .report-preview-footer {
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--app-color-outline);
+  background: var(--app-color-surface);
+}
+
+ion-modal.report-preview-modal .report-preview-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 560px);
+  margin: 0 auto;
+}
+
+ion-modal.report-preview-modal .pdf-paper {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 210mm);
+  margin: 12px auto;
+  padding: 14px;
+  border: 1px solid var(--app-color-outline);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #283445;
+  box-shadow: var(--app-shadow-card);
+}
+
+ion-modal.report-preview-modal .pdf-paper section {
+  padding-top: 9px;
+  border-top: 1px solid var(--app-color-outline);
+}
+
+ion-modal.report-preview-modal .pdf-paper h3,
+ion-modal.report-preview-modal .pdf-paper h4,
+ion-modal.report-preview-modal .pdf-paper p {
+  margin: 0;
+}
+
+ion-modal.report-preview-modal .pdf-paper h3 {
+  color: var(--app-color-navy);
+  font-size: 16px;
+}
+
+ion-modal.report-preview-modal .pdf-paper h4 {
+  margin-bottom: 7px;
+  color: var(--app-color-navy);
+  font-size: 12px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-heading p,
+ion-modal.report-preview-modal .pdf-paper-heading time,
+ion-modal.report-preview-modal .pdf-paper-identity dt,
+ion-modal.report-preview-modal .pdf-paper-metrics span {
+  color: var(--app-color-muted);
+  font-size: 10px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-identity,
+ion-modal.report-preview-modal .pdf-paper-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+ion-modal.report-preview-modal .pdf-paper-identity dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+ion-modal.report-preview-modal .pdf-paper-metrics p {
+  display: grid;
+  gap: 2px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-metrics strong {
+  font-size: 11px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-balance {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-ring {
+  display: grid;
+  width: 68px;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--app-color-success-dark) var(--progress), var(--app-color-outline) var(--progress));
+  position: relative;
+}
+
+ion-modal.report-preview-modal .pdf-paper-ring::before {
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  background: #ffffff;
+  content: '';
+}
+
+ion-modal.report-preview-modal .pdf-paper-ring strong {
+  position: relative;
+  color: var(--app-color-navy);
+  font-size: 12px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-balance h5 {
+  margin: 0 0 4px;
+  color: var(--app-color-navy);
+  font-size: 11px;
+}
+
+ion-modal.report-preview-modal .pdf-paper-balance p {
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+ion-modal.report-preview-modal .table-scroll {
+  overflow-x: auto;
+}
+
+ion-modal.report-preview-modal table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+ion-modal.report-preview-modal th,
+ion-modal.report-preview-modal td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--app-color-outline);
+  text-align: left;
+}
+
+ion-modal.report-preview-modal th {
+  color: var(--app-color-navy);
+  font-size: 10px;
+}
+
+ion-modal.report-preview-modal .observation-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+ion-modal.report-preview-modal .observation-photos figure {
+  width: 96px;
+  margin: 0;
+}
+
+ion-modal.report-preview-modal .observation-photos img {
+  width: 96px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+ion-modal.report-preview-modal .observation-photos figcaption {
+  overflow: hidden;
+  color: var(--app-color-muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+app-commercial-report .report-error {
+  margin: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--app-color-danger-surface);
+  color: var(--app-color-danger-dark);
+  font-size: 12px;
+}
+
 app-root .startup-splash {
   position: fixed;
   z-index: 10000;
@@ -413,8 +987,167 @@ app-root .startup-splash p {
 }
 
 @media (max-width: 599px) {
+  ion-modal.report-preview-modal {
+    --width: calc(100vw - 20px);
+    --height: min(94dvh, 960px);
+  }
+
+  app-commercial-report .executive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  app-commercial-report .report-page {
+    gap: 10px;
+    padding: 8px;
+  }
+
+  app-commercial-report .report-heading,
+  app-commercial-report .report-identity,
+  app-commercial-report .executive-card,
+  app-commercial-report .physical-section,
+  app-commercial-report .observations-section {
+    padding: 11px;
+  }
+
+  app-commercial-report .report-heading h1 {
+    font-size: 19px;
+  }
+
+  app-commercial-report .report-identity dl {
+    gap: 8px;
+  }
+
+  app-commercial-report .executive-metrics {
+    gap: 6px;
+  }
+
+  app-commercial-report .executive-metrics article {
+    padding: 8px;
+  }
+
+  ion-modal.report-preview-modal .pdf-paper {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  ion-modal.report-preview-modal .pdf-paper-heading {
+    flex-direction: column;
+  }
+
+  app-commercial-report .table-scroll {
+    overflow: visible;
+  }
+
+  ion-modal.report-preview-modal .table-scroll {
+    overflow: visible;
+  }
+
+  app-commercial-report table,
+  app-commercial-report tbody,
+  ion-modal.report-preview-modal table,
+  ion-modal.report-preview-modal tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  app-commercial-report thead,
+  ion-modal.report-preview-modal thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  app-commercial-report tbody tr,
+  ion-modal.report-preview-modal tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 10px;
+    margin-bottom: 8px;
+    padding: 7px;
+    border: 1px solid var(--app-color-outline);
+    border-radius: 10px;
+  }
+
+  app-commercial-report td,
+  ion-modal.report-preview-modal td {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 4px;
+    padding: 6px 2px;
+    border: 0;
+    font-size: 10px;
+    text-align: right;
+  }
+
+  app-commercial-report td::before,
+  ion-modal.report-preview-modal td::before {
+    content: attr(data-label);
+    color: var(--app-color-muted);
+    font-size: 9px;
+    text-align: left;
+  }
+
+  app-commercial-report td:first-child,
+  ion-modal.report-preview-modal td:first-child {
+    grid-column: 1 / -1;
+    display: block;
+    border-bottom: 1px solid var(--app-color-outline);
+    color: var(--app-color-navy);
+    font-weight: 700;
+    text-align: left;
+  }
+
+  app-commercial-report td:first-child::before,
+  ion-modal.report-preview-modal td:first-child::before {
+    content: none;
+  }
+
+  app-dashboard .quota-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  app-dashboard .quota-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  app-dashboard .quota-card {
+    padding: 10px;
+  }
+
+  app-dashboard .quota-card h3 {
+    font-size: 12px;
+  }
+
+  app-dashboard .quota-card-detail,
+  app-dashboard .quota-card-total {
+    gap: 7px;
+  }
+
   ion-content:not(.menu-content) {
     --padding-start: var(--app-gutter-mobile);
     --padding-end: var(--app-gutter-mobile);
+  }
+}
+
+@media (max-width: 380px) {
+  app-commercial-report .report-identity dl,
+  app-commercial-report .executive-metrics,
+  ion-modal.report-preview-modal .pdf-paper-identity,
+  ion-modal.report-preview-modal .pdf-paper-metrics,
+  app-commercial-report .pdf-paper-identity,
+  app-commercial-report .pdf-paper-metrics,
+  app-commercial-report tbody tr,
+  ion-modal.report-preview-modal tbody tr,
+  app-dashboard .quota-summary {
+    grid-template-columns: 1fr;
+  }
+
+  app-dashboard .quota-card:first-child,
+  app-commercial-report td:first-child {
+    grid-column: auto;
   }
 }
