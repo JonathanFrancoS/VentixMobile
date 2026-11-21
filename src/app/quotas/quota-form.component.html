@@ -72,9 +72,7 @@
               <button
                 class="icon-action edit-action"
                 type="button"
-                [attr.aria-label]="
-                  (isTotalEditing(family.id) ? 'Guardar total de ' : 'Editar total de ') + family.name
-                "
+                [attr.aria-label]="(isTotalEditing(family.id) ? 'Guardar total de ' : 'Editar total de ') + family.name"
                 (click)="toggleTotalEdit(family.id)"
               >
                 <ion-icon [name]="isTotalEditing(family.id) ? 'checkmark-outline' : 'create-outline'"></ion-icon>
@@ -136,5 +134,8 @@
         </div>
       </div>
     </section>
+  }
+  @if (quotaState.persistenceError()) {
+    <ion-note color="danger" role="alert">{{ quotaState.persistenceError() }}</ion-note>
   }
 </main>

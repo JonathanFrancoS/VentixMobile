@@ -1,40 +1,26 @@
-import { Component, signal } from '@angular/core';
-import { IonCard, IonIcon } from '@ionic/angular';
+import { Component, inject, signal } from '@angular/core';
+import { IonCard, IonIcon, IonNote } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { checkmarkOutline, createOutline, trashOutline } from 'ionicons/icons';
 
-import { salesFamilies, type SalesFamily } from '../sales/sales-catalog.data';
-import { QuotaStateService } from './quota-state.service';
+import type { SalesFamily } from '../sales/sales-catalog.data';
 
-type QuotaSection = {
-  id: 'aguardiente' | 'ron';
-  name: string;
-  families: SalesFamily[];
-};
+import { quotaSections, type QuotaSection } from './quota-sections';
+import { QuotaStateService } from './quota-state.service';
 
 @Component({
   selector: 'app-quota-form',
   templateUrl: './quota-form.component.html',
   styleUrls: ['./quota-form.component.scss'],
-  imports: [IonCard, IonIcon],
+  imports: [IonCard, IonIcon, IonNote],
 })
 export class QuotaFormComponent {
-  readonly sections: QuotaSection[] = [
-    {
-      id: 'aguardiente',
-      name: 'Aguardientes',
-      families: salesFamilies.filter((family) => family.category === 'Aguardiente'),
-    },
-    {
-      id: 'ron',
-      name: 'Rones',
-      families: salesFamilies.filter((family) => family.category !== 'Aguardiente'),
-    },
-  ];
+  readonly sections = quotaSections;
   readonly editingProducts = signal<Record<string, boolean>>({});
   readonly editingTotals = signal<Record<string, boolean>>({});
+  protected readonly quotaState = inject(QuotaStateService);
 
-  constructor(protected readonly quotaState: QuotaStateService) {
+  constructor() {
     addIcons({ checkmarkOutline, createOutline, trashOutline });
   }
 

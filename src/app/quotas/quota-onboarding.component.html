@@ -1,0 +1,90 @@
+<div class="quota-onboarding" role="presentation">
+  <section class="quota-setup-card" role="dialog" aria-modal="true" aria-labelledby="quota-onboarding-title">
+    <div class="quota-title-row">
+      @if (mode() !== null) {
+        <button class="quota-back" type="button" aria-label="Volver a las opciones" (click)="returnToOptions()">
+          <ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon>
+        </button>
+      }
+      <h1 id="quota-onboarding-title">Define tus cuotas</h1>
+    </div>
+
+    @if (mode() === null) {
+      <p class="quota-setup-description">Elige cómo quieres registrar las metas de esta jornada.</p>
+      <button class="quota-mode-card" type="button" (click)="selectMode('totals')">
+        <strong>Totales generales</strong>
+        <span>Ingresa una cuota total para aguardientes y otra para rones.</span>
+      </button>
+      <button class="quota-mode-card" type="button" (click)="selectMode('products')">
+        <strong>Por referencia</strong>
+        <span>Distribuye la cuota entre cada familia y presentación.</span>
+      </button>
+    } @else {
+      <h2 class="quota-mode-title">{{ mode() === 'totals' ? 'Totales generales' : 'Cuota por referencia' }}</h2>
+      <form class="quota-setup-form" novalidate (submit)="saveSetup($event)">
+        @if (mode() === 'totals') {
+          <div class="total-fields">
+            <label for="quota-total-aguardientes">Total Aguardientes</label>
+            <input
+              id="quota-total-aguardientes"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              required
+              placeholder="Ej. 40"
+              [value]="totalAguardientes()"
+              (input)="updateTotal('aguardiente', $event)"
+            />
+            <label for="quota-total-rones">Total Rones</label>
+            <input
+              id="quota-total-rones"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              required
+              placeholder="Ej. 20"
+              [value]="totalRones()"
+              (input)="updateTotal('ron', $event)"
+            />
+          </div>
+        } @else {
+          <div class="reference-list">
+            @for (section of sections; track section.id) {
+              <section class="reference-section" [attr.aria-label]="section.name">
+                <h3>{{ section.name }}</h3>
+                @for (family of section.families; track family.id) {
+                  <fieldset class="reference-family">
+                    <legend>{{ family.name }}</legend>
+                    @for (product of family.products; track product.id) {
+                      <label [for]="'setup-' + product.id">
+                        {{ product.volume }}
+                        <input
+                          [id]="'setup-' + product.id"
+                          type="number"
+                          inputmode="numeric"
+                          min="0"
+                          step="1"
+                          placeholder="0"
+                          [value]="productValue(product.id)"
+                          [attr.aria-label]="'Cuota, ' + family.name + ', ' + product.volume"
+                          (input)="updateProductValue(product.id, $event)"
+                        />
+                      </label>
+                    }
+                  </fieldset>
+                }
+              </section>
+            }
+          </div>
+        }
+
+        <p class="quota-setup-error" role="alert">{{ errorMessage() }}</p>
+        <ion-button type="button" class="quota-setup-submit" [disabled]="isSaving()" (click)="saveSetup($event)">
+          {{ isSaving() ? 'Guardando...' : 'Guardar cuotas e ir a Inicio' }}
+        </ion-button>
+      </form>
+    }
+  </section>
+</div>

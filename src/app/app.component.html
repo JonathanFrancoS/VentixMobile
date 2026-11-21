@@ -14,6 +14,8 @@
     </div>
   } @else if (showJourneyWizard()) {
     <app-journey-onboarding></app-journey-onboarding>
+  } @else if (showQuotaWizard()) {
+    <app-quota-onboarding></app-quota-onboarding>
   }
 
   <ion-split-pane contentId="main-content">

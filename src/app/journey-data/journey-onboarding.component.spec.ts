@@ -6,19 +6,12 @@ import { afterEach, vi } from 'vitest';
 import { JourneyDataService } from './journey-data.service';
 import { JourneyOnboardingComponent } from './journey-onboarding.component';
 
-vi.mock('@capacitor/preferences', () => ({
-  Preferences: {
-    get: vi.fn(),
-    set: vi.fn(),
-  },
-}));
-
 describe('JourneyOnboardingComponent', () => {
   let fixture: ComponentFixture<JourneyOnboardingComponent>;
   let journeyData: JourneyDataService;
 
   beforeEach(async () => {
-    vi.mocked(Preferences.set).mockResolvedValue();
+    await Preferences.remove({ key: 'ventix.journey.v1' });
     await TestBed.configureTestingModule({
       imports: [JourneyOnboardingComponent],
     }).compileComponents();
@@ -28,7 +21,9 @@ describe('JourneyOnboardingComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(async () => {
+    await Preferences.remove({ key: 'ventix.journey.v1' });
+  });
 
   it('collects required journey fields and allows the point-of-sale code and city to be skipped', async () => {
     const app = fixture.nativeElement as HTMLElement;

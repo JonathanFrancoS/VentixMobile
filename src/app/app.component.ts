@@ -41,6 +41,7 @@ import { filter, take } from 'rxjs';
 import { JourneyDataService } from './journey-data/journey-data.service';
 import { JourneyOnboardingComponent } from './journey-data/journey-onboarding.component';
 import { ObservationsService } from './observations/observations.service';
+import { QuotaOnboardingComponent } from './quotas/quota-onboarding.component';
 import { QuotaStateService } from './quotas/quota-state.service';
 import { SalesStateService } from './sales/sales-state.service';
 
@@ -66,11 +67,26 @@ import { SalesStateService } from './sales/sales-state.service';
     IonLabel,
     IonRouterOutlet,
     JourneyOnboardingComponent,
+    QuotaOnboardingComponent,
   ],
 })
 export class AppComponent {
   protected readonly showSplash = signal(true);
-  protected readonly showJourneyWizard = computed(() => this.journeyData.initialized() && !this.journeyData.hasData());
+  protected readonly showJourneyWizard = computed(
+    () =>
+      !this.closingJourney() &&
+      this.journeyData.initialized() &&
+      this.quotaState.initialized() &&
+      !this.journeyData.hasData(),
+  );
+  protected readonly showQuotaWizard = computed(
+    () =>
+      !this.closingJourney() &&
+      this.journeyData.initialized() &&
+      this.quotaState.initialized() &&
+      this.journeyData.hasData() &&
+      !this.quotaState.configured(),
+  );
   protected readonly journeyLoadError = signal(false);
   protected readonly closingJourney = signal(false);
   private readonly router = inject(Router);
@@ -163,6 +179,8 @@ export class AppComponent {
         return;
       }
 
+      await Promise.all([this.journeyData.initialize(), this.quotaState.initialize()]);
+      await this.quotaState.reset();
       await this.journeyData.createNewJourney();
     } catch (error) {
       console.error('No se pudo cerrar la jornada actual.', error);
@@ -186,9 +204,9 @@ export class AppComponent {
 
   private async loadJourneyData(): Promise<void> {
     try {
-      await this.journeyData.initialize();
+      await Promise.all([this.journeyData.initialize(), this.quotaState.initialize()]);
     } catch (error) {
-      console.error('No se pudieron cargar los datos guardados de la jornada.', error);
+      console.error('No se pudieron cargar los datos guardados de la jornada y las cuotas.', error);
       this.journeyLoadError.set(true);
     }
   }
@@ -196,7 +214,7 @@ export class AppComponent {
   private async showCloseJourneyError(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'No se pudo cerrar la jornada',
-      message: 'Los datos actuales se conservaron. Inténtalo nuevamente.',
+      message: 'No se pudo completar el cierre. Revisa la configuración de cuotas e inténtalo nuevamente.',
       buttons: ['Entendido'],
     });
     await alert.present();

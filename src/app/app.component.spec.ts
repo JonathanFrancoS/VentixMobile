@@ -103,6 +103,8 @@ describe('AppComponent', () => {
     salesState.adjustQuantity('test-product', 1);
     salesState.adjustQuantity('test-product', 1);
     const quotaState = TestBed.inject(QuotaStateService);
+    await quotaState.initialize();
+    await quotaState.configureTotals(25, 10);
     quotaState.setProductQuota('test-product', 10);
     quotaState.setManualTotal('aguardiente', 25);
     const observations = TestBed.inject(ObservationsService);
@@ -136,6 +138,9 @@ describe('AppComponent', () => {
     });
     const salesState = TestBed.inject(SalesStateService);
     salesState.adjustQuantity('test-product', 1);
+    const quotaState = TestBed.inject(QuotaStateService);
+    await quotaState.initialize();
+    await quotaState.configureTotals(25, 10);
     fixture.detectChanges();
 
     (fixture.nativeElement.querySelector('.menu-footer ion-button') as HTMLElement).click();
@@ -144,5 +149,26 @@ describe('AppComponent', () => {
     expect(journeyData.hasData()).toBe(true);
     expect(salesState.quantities()).toEqual({ 'test-product': 1 });
     expect(closeMenu).not.toHaveBeenCalled();
+  });
+
+  it('continues to quota setup after journey data are saved', async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const journeyData = TestBed.inject(JourneyDataService);
+    const quotaState = TestBed.inject(QuotaStateService);
+    await Promise.all([journeyData.initialize(), quotaState.initialize()]);
+    await quotaState.reset();
+    await journeyData.startJourney({
+      advisorName: 'Laura Gómez',
+      advisorCode: 'AS-12',
+      salesPointName: 'Tienda Central',
+      salesPointCode: '',
+      city: '',
+    });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-journey-onboarding')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-quota-onboarding')).not.toBeNull();
   });
 });

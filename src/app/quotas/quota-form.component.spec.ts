@@ -18,9 +18,9 @@ describe('QuotaFormComponent', () => {
   it('groups products into Aguardiente and Ron and shows volumes without repeated names', () => {
     const app = fixture.nativeElement as HTMLElement;
 
-    expect(Array.from(app.querySelectorAll('.quota-section > h1')).map((heading) => heading.textContent?.trim())).toEqual(
-      ['Aguardiente', 'Ron'],
-    );
+    expect(
+      Array.from(app.querySelectorAll('.quota-section > h1')).map((heading) => heading.textContent?.trim()),
+    ).toEqual(['Aguardientes', 'Rones']);
     expect(app.querySelectorAll('.quota-family').length).toBe(10);
     expect(app.querySelectorAll('.quota-row').length).toBe(33);
     expect(app.querySelectorAll('.section-total input').length).toBe(2);
