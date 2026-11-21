@@ -47,7 +47,7 @@
               [attr.aria-label]="'Agregar una unidad de ' + product.name + ', ' + product.volume"
               (click)="adjustQuantity(product.id, 1)"
             >
-              <img [src]="productImage" alt="" loading="lazy" />
+              <img [src]="product.image" alt="" loading="lazy" />
             </button>
 
             <h2 class="product-name">{{ product.name }}</h2>

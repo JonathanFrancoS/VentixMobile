@@ -31,4 +31,28 @@ describe('FolderPage', () => {
     const app = fixture.nativeElement as HTMLElement;
     expect(app.querySelector('app-sales-catalog')).not.toBeNull();
   });
+
+  it('shows the dashboard on the home page', () => {
+    fixture.componentRef.setInput('folder', 'Inicio');
+    fixture.detectChanges();
+
+    const app = fixture.nativeElement as HTMLElement;
+    expect(app.querySelector('app-dashboard')).not.toBeNull();
+  });
+
+  it('shows the journey data form on the journey data page', () => {
+    fixture.componentRef.setInput('folder', 'Datos de la jornada');
+    fixture.detectChanges();
+
+    const app = fixture.nativeElement as HTMLElement;
+    expect(app.querySelector('app-journey-data-form')).not.toBeNull();
+  });
+
+  it('shows the observations form on the observations page', () => {
+    fixture.componentRef.setInput('folder', 'Observaciones');
+    fixture.detectChanges();
+
+    const app = fixture.nativeElement as HTMLElement;
+    expect(app.querySelector('app-observations')).not.toBeNull();
+  });
 });

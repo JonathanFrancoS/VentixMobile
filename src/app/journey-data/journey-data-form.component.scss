@@ -1,0 +1,19 @@
+.journey-page { padding: 12px; }
+.journey-hint { margin: 0 0 16px; color: var(--app-color-muted); font-size: 13px; }
+.journey-form { margin: 0; padding: 4px 14px; }
+.journey-field { padding: 12px 0; border-bottom: 1px solid var(--app-color-outline); }
+.journey-field:last-child { border: 0; }
+.journey-field label { display: block; margin-bottom: 8px; color: var(--app-color-navy); font-size: 14px; font-weight: 600; }
+.journey-controls { display: flex; align-items: center; gap: 4px; }
+.journey-controls input { flex: 1; min-width: 0; height: 42px; padding: 0 10px; border: 1px solid var(--app-color-outline-strong); border-radius: 10px; background: var(--app-color-surface); color: var(--app-color-ink); font: inherit; }
+.journey-controls input:disabled { background: var(--app-color-surface-subtle); }
+.journey-date-time { min-height: 42px; padding: 11px 10px; border: 1px solid var(--app-color-outline); border-radius: 10px; background: var(--app-color-surface-subtle); color: var(--app-color-navy); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.datetime-display-row { display: flex; align-items: center; gap: 8px; }
+.datetime-display-row .journey-date-time { flex: 1; min-width: 0; }
+.format-toggle { display: inline-flex; width: 38px; min-width: 38px; height: 38px; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--app-color-outline); border-radius: 9px; background: var(--app-color-surface); color: var(--app-color-electric-blue); font-size: 18px; }
+.format-toggle:focus-visible,
+.icon-action:focus-visible { outline: 2px solid var(--app-color-electric-blue); outline-offset: 1px; }
+.journey-field small { display: block; margin-top: 6px; color: var(--app-color-muted); font-size: 12px; }
+.icon-action { display: inline-flex; width: 36px; min-width: 36px; height: 36px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--app-color-electric-blue); font-size: 18px; }
+.delete-action { color: var(--app-color-danger-dark); }
+.journey-storage-error { margin: 12px 4px; color: var(--app-color-danger-dark); font-size: 13px; }

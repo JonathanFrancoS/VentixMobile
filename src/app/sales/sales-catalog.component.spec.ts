@@ -105,6 +105,23 @@ describe('SalesCatalogComponent', () => {
     expect(app.querySelector('.slide-heading h1')?.textContent?.trim()).toBe('Antioqueño 24° Sin Azúcar (Verde)');
   });
 
+  it('shows a color-specific illustration for each sales family', () => {
+    const images = fixture.componentInstance.slides.map((slide) => slide.products[0].image);
+    const firstCardImage = (fixture.nativeElement as HTMLElement).querySelector('.product-image img');
+
+    expect(images).toEqual([
+      '/assets/products/antioqueno-verde.svg',
+      '/assets/products/antioqueno-azul.svg',
+      '/assets/products/antioqueno-rojo.svg',
+      '/assets/products/antioqueno-premium.svg',
+      '/assets/products/ron-dorado.svg',
+      '/assets/products/ron-anejo-3.svg',
+      '/assets/products/ron-especializado.svg',
+    ]);
+    expect(firstCardImage?.getAttribute('src')).toBe(images[0]);
+    expect(fixture.componentInstance.slides[6].products.every((product) => product.image === images[6])).toBe(true);
+  });
+
   it('adds from the image and quantity controls without allowing a negative quantity', () => {
     const app = fixture.nativeElement as HTMLElement;
     const firstCard = app.querySelector('.product-card') as HTMLElement;

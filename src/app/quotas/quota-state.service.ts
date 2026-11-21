@@ -5,11 +5,13 @@ import { salesFamilies } from '../sales/sales-catalog.data';
 const aguardienteFamilies = salesFamilies.filter((family) => family.category === 'Aguardiente');
 const ronFamilies = salesFamilies.filter((family) => family.category !== 'Aguardiente');
 
+function emptyProductQuotas(): Record<string, number> {
+  return Object.fromEntries(salesFamilies.flatMap((family) => family.products.map((product) => [product.id, 0])));
+}
+
 @Injectable({ providedIn: 'root' })
 export class QuotaStateService {
-  readonly productQuotas = signal(
-    Object.fromEntries(salesFamilies.flatMap((family) => family.products.map((product) => [product.id, 0]))),
-  );
+  readonly productQuotas = signal(emptyProductQuotas());
   private readonly manualTotals = signal<Record<string, number>>({});
   readonly totals = computed<Record<string, number>>(() => {
     const quotas = this.productQuotas();
@@ -17,8 +19,7 @@ export class QuotaStateService {
     const familyTotals = Object.fromEntries(
       salesFamilies.map((family) => [
         family.id,
-        overrides[family.id] ??
-          family.products.reduce((sum, product) => sum + (quotas[product.id] ?? 0), 0),
+        overrides[family.id] ?? family.products.reduce((sum, product) => sum + (quotas[product.id] ?? 0), 0),
       ]),
     );
     const sumFamilies = (families: typeof salesFamilies): number =>
@@ -44,5 +45,10 @@ export class QuotaStateService {
       const { [id]: _removed, ...remainingTotals } = totals;
       return remainingTotals;
     });
+  }
+
+  reset(): void {
+    this.productQuotas.set(emptyProductQuotas());
+    this.manualTotals.set({});
   }
 }

@@ -1,6 +1,7 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { IonButton, IonCard } from '@ionic/angular';
-import { salesProductImage, salesSlides } from './sales-catalog.data';
+import { salesSlides } from './sales-catalog.data';
+import { SalesStateService } from './sales-state.service';
 
 @Component({
   selector: 'app-sales-catalog',
@@ -14,19 +15,16 @@ export class SalesCatalogComponent {
   readonly activeSlideIndex = signal(0);
   readonly navigationDirection = signal<-1 | 1>(1);
   readonly currentSlide = computed(() => this.slides[this.activeSlideIndex()]);
-  readonly quantities = signal<Record<string, number>>({});
+  private readonly salesState = inject(SalesStateService);
 
   private touchStart: { x: number; y: number } | null = null;
 
   protected quantity(productId: string): number {
-    return this.quantities()[productId] ?? 0;
+    return this.salesState.quantities()[productId] ?? 0;
   }
 
   protected adjustQuantity(productId: string, change: -1 | 1): void {
-    this.quantities.update((quantities) => ({
-      ...quantities,
-      [productId]: Math.max(0, (quantities[productId] ?? 0) + change),
-    }));
+    this.salesState.adjustQuantity(productId, change);
   }
 
   protected moveSlide(direction: -1 | 1): void {
@@ -67,6 +65,4 @@ export class SalesCatalogComponent {
   protected onCarouselTouchCancel(): void {
     this.touchStart = null;
   }
-
-  protected readonly productImage = salesProductImage;
 }

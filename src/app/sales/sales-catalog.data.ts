@@ -2,6 +2,7 @@ export type SalesProduct = {
   id: string;
   name: string;
   volume: string;
+  image: string;
 };
 
 export type SalesFamily = {
@@ -25,7 +26,15 @@ export type SalesSlide = {
 };
 
 const standardVolumes = ['2000 ml', '1000 ml', '1050 ml', '750 ml', '375 ml', '260 ml'];
-export const salesProductImage = 'assets/products/spirits-bottle.svg';
+const productImages = {
+  verde: '/assets/products/antioqueno-verde.svg',
+  azul: '/assets/products/antioqueno-azul.svg',
+  tradicional: '/assets/products/antioqueno-rojo.svg',
+  premium: '/assets/products/antioqueno-premium.svg',
+  ronDorado: '/assets/products/ron-dorado.svg',
+  ronAnejo: '/assets/products/ron-anejo-3.svg',
+  ronEspecializado: '/assets/products/ron-especializado.svg',
+};
 
 function createFamily(
   id: string,
@@ -33,6 +42,7 @@ function createFamily(
   name: string,
   productName: string,
   volumes: string[],
+  image: string,
 ): SalesFamily {
   return {
     id,
@@ -42,6 +52,7 @@ function createFamily(
       id: `${id}-${index}`,
       name: productName,
       volume,
+      image,
     })),
   };
 }
@@ -53,6 +64,7 @@ export const salesFamilies: SalesFamily[] = [
     'Antioqueño 24° Sin Azúcar (Verde)',
     'Antioqueño 24° Sin Azúcar (Verde)',
     ['1750 ml', '1000 ml', '1050 ml', '750 ml', '375 ml', '260 ml'],
+    productImages.verde,
   ),
   createFamily(
     'antioqueno-azul',
@@ -60,6 +72,7 @@ export const salesFamilies: SalesFamily[] = [
     'Antioqueño Sin Azúcar (Azul)',
     'Antioqueño Sin Azúcar (Azul)',
     standardVolumes,
+    productImages.azul,
   ),
   createFamily(
     'antioqueno-rojo',
@@ -67,6 +80,7 @@ export const salesFamilies: SalesFamily[] = [
     'Antioqueño Tradicional (Rojo)',
     'Antioqueño Tradicional (Rojo) joven',
     standardVolumes,
+    productImages.tradicional,
   ),
   createFamily(
     'antioqueno-real',
@@ -74,15 +88,31 @@ export const salesFamilies: SalesFamily[] = [
     'Antioqueño Real Sin Azúcar (Premium)',
     'Antioqueño Real Sin Azúcar (Premium)',
     ['750 ml'],
+    productImages.premium,
   ),
-  createFamily('ron-dorado', 'Ron', 'Ron Medellín Dorado', 'Ron Medellín Dorado', ['750 ml', '375 ml']),
-  createFamily('ron-3 Años', 'Ron', 'Ron Medellín Añejo 3 Años', 'Ron Medellín Añejo 3 años', standardVolumes),
+  createFamily(
+    'ron-dorado',
+    'Ron',
+    'Ron Medellín Dorado',
+    'Ron Medellín Dorado',
+    ['750 ml', '375 ml'],
+    productImages.ronDorado,
+  ),
+  createFamily(
+    'ron-3 Años',
+    'Ron',
+    'Ron Medellín Añejo 3 Años',
+    'Ron Medellín Añejo 3 años',
+    standardVolumes,
+    productImages.ronAnejo,
+  ),
   createFamily(
     'ron-5-anos',
     'Ron especializado',
     'Ron Medellín 5 años Extra Añejo',
     'Ron Medellín 5 años Extra Añejo',
     ['750 ml', '375 ml'],
+    productImages.ronEspecializado,
   ),
   createFamily(
     'ron-8-anos',
@@ -90,6 +120,7 @@ export const salesFamilies: SalesFamily[] = [
     'Ron Medellín 8 años Extra Añejo Reserva Especial',
     'Ron Medellín 8 años Extra Añejo Reserva Especial',
     ['750 ml', '375 ml'],
+    productImages.ronEspecializado,
   ),
   createFamily(
     'ron-12-anos',
@@ -97,6 +128,7 @@ export const salesFamilies: SalesFamily[] = [
     'Ron Medellín 12 años Gran Reserva',
     'Ron Medellín 12 años Gran Reserva',
     ['750 ml'],
+    productImages.ronEspecializado,
   ),
   createFamily(
     'ron-19-anos',
@@ -104,6 +136,7 @@ export const salesFamilies: SalesFamily[] = [
     'Ron Medellín 19 años Gran Solera',
     'Ron Medellín 19 años Gran Solera',
     ['750 ml'],
+    productImages.ronEspecializado,
   ),
 ];
 

@@ -1,4 +1,21 @@
 <ion-app>
+  @if (showSplash()) {
+    <div class="startup-splash" role="status" aria-label="Iniciando Ventix Mobile">
+      <img src="/assets/icon/favicon.png" alt="" />
+      <p>Ventix Mobile</p>
+    </div>
+  }
+
+  @if (journeyLoadError()) {
+    <div class="journey-load-error" role="alert">
+      <h1>No se pudo cargar la jornada</h1>
+      <p>Comprueba el almacenamiento de la aplicación e inténtalo nuevamente.</p>
+      <ion-button (click)="retryJourneyLoad()">Reintentar</ion-button>
+    </div>
+  } @else if (showJourneyWizard()) {
+    <app-journey-onboarding></app-journey-onboarding>
+  }
+
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
@@ -24,7 +41,7 @@
         </ion-list>
       </ion-content>
       <ion-footer class="menu-footer">
-        <ion-button expand="block" color="danger">
+        <ion-button expand="block" color="danger" [disabled]="closingJourney()" (click)="closeJourney()">
           <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
           Cerrar jornada
         </ion-button>

@@ -3,7 +3,12 @@ import type { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'folder/Inbox',
+    redirectTo: 'folder/Inicio',
+    pathMatch: 'full',
+  },
+  {
+    path: 'folder/Inbox',
+    redirectTo: 'folder/Inicio',
     pathMatch: 'full',
   },
   {

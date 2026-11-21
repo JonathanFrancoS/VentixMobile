@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="ventix-gradient" x1="20%" y1="0%" x2="80%" y2="0%">
+      <stop offset="0" stop-color="#fff" />
+      <stop offset="1" stop-color="#00c8c4" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M190 160 512 850 834 160"
+    fill="none"
+    stroke="url(#ventix-gradient)"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+    stroke-width="160"
+  />
+</svg>

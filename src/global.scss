@@ -257,6 +257,161 @@ ion-action-sheet {
   font-variant-numeric: tabular-nums;
 }
 
+app-dashboard .commercial-section {
+  margin: 20px 0 24px;
+}
+
+app-dashboard .commercial-section > h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+app-dashboard .commercial-card {
+  --commercial-color: var(--app-color-danger-dark);
+  --commercial-surface: var(--app-color-danger-surface);
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid var(--app-color-outline);
+  border-radius: var(--app-radius-card);
+  background: var(--app-color-surface);
+  box-shadow: var(--app-shadow-card);
+}
+
+app-dashboard .commercial-card--good {
+  --commercial-color: var(--app-color-success-dark);
+  --commercial-surface: var(--app-color-success-surface);
+}
+
+app-dashboard .commercial-card--warning {
+  --commercial-color: var(--app-color-warning-dark);
+  --commercial-surface: var(--app-color-warning-surface);
+}
+
+app-dashboard .commercial-card-header,
+app-dashboard .commercial-title,
+app-dashboard .commercial-totals {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+app-dashboard .commercial-title {
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+app-dashboard .commercial-title ion-icon {
+  flex: 0 0 auto;
+  color: var(--app-color-electric-blue);
+  font-size: 22px;
+}
+
+app-dashboard .commercial-title h3,
+app-dashboard .commercial-title p {
+  margin: 0;
+}
+
+app-dashboard .commercial-title h3 {
+  font-size: 14px;
+}
+
+app-dashboard .commercial-title p {
+  margin-top: 2px;
+  color: var(--app-color-muted);
+  font-size: 11px;
+}
+
+app-dashboard .commercial-percentage {
+  flex: 0 0 auto;
+  color: var(--commercial-color);
+  font-size: 14px;
+}
+
+app-dashboard .commercial-totals {
+  margin: 12px 0 8px;
+  font-size: 11px;
+}
+
+app-dashboard .commercial-totals strong {
+  color: var(--app-color-ink);
+}
+
+app-dashboard .commercial-progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: var(--app-radius-pill);
+  background: var(--app-color-outline);
+}
+
+app-dashboard .commercial-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--commercial-color);
+  transition: width 180ms ease;
+}
+
+app-dashboard .commercial-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+app-dashboard .commercial-chip {
+  padding: 5px 8px;
+  border-radius: var(--app-radius-pill);
+  background: var(--commercial-surface);
+  color: var(--commercial-color);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+app-root .startup-splash {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: var(--app-color-navy-deep);
+  color: #ffffff;
+  animation: startup-splash-appear 300ms ease-out both;
+}
+
+app-root .startup-splash img {
+  width: 104px;
+  height: 104px;
+  border-radius: 24px;
+  box-shadow: var(--app-shadow-raised);
+}
+
+app-root .startup-splash p {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--app-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@keyframes startup-splash-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  app-root .startup-splash {
+    animation: none;
+  }
+}
+
 @media (max-width: 599px) {
   ion-content:not(.menu-content) {
     --padding-start: var(--app-gutter-mobile);

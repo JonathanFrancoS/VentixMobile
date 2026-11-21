@@ -1,0 +1,22 @@
+.observations-page { padding: 12px; }
+.new-observation, .observation-card { padding: 12px; }
+.new-observation { margin-bottom: 12px; border: 1px solid var(--app-color-outline); border-radius: var(--app-radius-card); }
+.new-observation h2 { margin: 0; font-size: 18px; }
+h3 { margin: 0; font-size: 14px; }
+textarea { display: block; width: 100%; min-height: 100px; margin: 12px 0; padding: 10px; border: 1px solid var(--app-color-outline-strong); border-radius: 10px; background: var(--app-color-surface); color: var(--app-color-ink); font: inherit; resize: vertical; }
+.primary-action, .camera-action { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 7px; padding: 0 10px; border: 0; border-radius: 9px; background: var(--app-color-electric-blue); color: white; font: inherit; font-size: 13px; font-weight: 600; }
+.primary-action:disabled { opacity: .5; }
+.observation-header, .evidence-heading, .photo-actions { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.observation-header time { color: var(--app-color-muted); font-size: 12px; }
+.observation-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence-section { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--app-color-outline); }
+.evidence-heading { flex-wrap: wrap; }
+.file-input { display: none; }
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
+.photo-card { margin: 0; padding: 8px; border: 1px solid var(--app-color-outline); border-radius: 10px; }
+.photo-card img { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 7px; background: var(--app-color-surface-subtle); object-fit: cover; }
+.photo-card figcaption { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.icon-action { display: inline-flex; width: 34px; min-width: 34px; height: 34px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--app-color-electric-blue); font-size: 17px; }
+.delete-action { color: var(--app-color-danger-dark); }
+.cancel-action { color: var(--app-color-muted); }
+.photo-error { color: var(--app-color-danger-dark); }

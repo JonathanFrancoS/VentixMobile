@@ -1,0 +1,169 @@
+<main class="observations-page">
+  <section class="new-observation">
+    <h2>Nueva observación</h2>
+    <textarea
+      rows="4"
+      placeholder="Escribe aquí la observación..."
+      aria-label="Nueva observación"
+      [value]="newText()"
+      (input)="updateNewText($event)"
+    ></textarea>
+    <button class="primary-action" type="button" [disabled]="!newText().trim()" (click)="saveNewObservation()">
+      <ion-icon name="add-outline"></ion-icon>
+      Guardar observación
+    </button>
+  </section>
+
+  @if (photoError()) {
+    <p class="photo-error" role="alert">{{ photoError() }}</p>
+  }
+
+  <section class="observation-list" aria-label="Observaciones registradas">
+    @if (observationsService.observations().length === 0) {
+      <p class="empty-state">Las observaciones y sus fotografías aparecerán aquí.</p>
+    }
+
+    @for (observation of observationsService.observations(); track observation.id) {
+      <ion-card class="observation-card">
+        <header class="observation-header">
+          <time>{{ formatDate(observation.createdAt) }}</time>
+          <div class="observation-actions">
+            @if (isEditingObservation(observation.id)) {
+              <button
+                class="icon-action edit-action"
+                type="button"
+                [disabled]="!observationDraft(observation.id).trim()"
+                [attr.aria-label]="'Guardar observación'"
+                (click)="saveObservation(observation.id)"
+              >
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </button>
+              <button
+                class="icon-action cancel-action"
+                type="button"
+                aria-label="Cancelar edición de observación"
+                (click)="cancelObservationEdit(observation.id)"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            } @else {
+              <button
+                class="icon-action edit-action"
+                type="button"
+                aria-label="Editar observación"
+                (click)="startEditingObservation(observation)"
+              >
+                <ion-icon name="create-outline"></ion-icon>
+              </button>
+            }
+            <button
+              class="icon-action delete-action"
+              type="button"
+              aria-label="Borrar observación y evidencias"
+              (click)="deleteObservation(observation.id)"
+            >
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </header>
+
+        @if (isEditingObservation(observation.id)) {
+          <textarea
+            rows="4"
+            [attr.aria-label]="'Editar observación'"
+            [value]="observationDraft(observation.id)"
+            (input)="updateObservationDraft(observation.id, $event)"
+          ></textarea>
+        } @else {
+          <p class="observation-text">{{ observation.text }}</p>
+        }
+
+        <section class="evidence-section" [attr.aria-label]="'Evidencias de la observación'">
+          <div class="evidence-heading">
+            <h3>Fotografías de evidencia</h3>
+            <input
+              #newPhotoInput
+              class="file-input"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              aria-label="Tomar o seleccionar fotografía"
+              (change)="addPhoto(observation.id, $event)"
+            />
+            <button class="camera-action" type="button" (click)="openPhotoPicker(newPhotoInput)">
+              <ion-icon name="camera-outline"></ion-icon>
+              Tomar fotografía
+            </button>
+          </div>
+
+          @if (observation.photos.length === 0) {
+            <p class="empty-photos">Aún no hay fotografías adjuntas.</p>
+          } @else {
+            <div class="photo-grid">
+              @for (photo of observation.photos; track photo.id) {
+                <figure class="photo-card">
+                  <img [src]="photoSource(photo, photoKey(observation.id, photo.id))" [alt]="photo.name" />
+                  <figcaption>{{ photo.name }}</figcaption>
+                  <input
+                    #replacePhotoInput
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    aria-label="Seleccionar fotografía de reemplazo"
+                    (change)="replacePhoto(observation.id, photo.id, $event)"
+                  />
+                  <div class="photo-actions">
+                    @if (isEditingPhoto(photoKey(observation.id, photo.id))) {
+                      <button
+                        class="icon-action edit-action"
+                        type="button"
+                        [disabled]="!hasPendingPhoto(photoKey(observation.id, photo.id))"
+                        aria-label="Guardar fotografía"
+                        (click)="savePhotoReplacement(observation.id, photo.id)"
+                      >
+                        <ion-icon name="checkmark-outline"></ion-icon>
+                      </button>
+                      <button
+                        class="icon-action cancel-action"
+                        type="button"
+                        aria-label="Cancelar cambio de fotografía"
+                        (click)="cancelPhotoEdit(photoKey(observation.id, photo.id))"
+                      >
+                        <ion-icon name="close-outline"></ion-icon>
+                      </button>
+                      <button
+                        class="camera-action"
+                        type="button"
+                        (click)="openPhotoPicker(replacePhotoInput)"
+                      >
+                        Cambiar
+                      </button>
+                    } @else {
+                      <button
+                        class="icon-action edit-action"
+                        type="button"
+                        aria-label="Editar fotografía"
+                        (click)="startPhotoEdit(photoKey(observation.id, photo.id), replacePhotoInput)"
+                      >
+                        <ion-icon name="create-outline"></ion-icon>
+                      </button>
+                    }
+                    <button
+                      class="icon-action delete-action"
+                      type="button"
+                      aria-label="Borrar fotografía"
+                      (click)="deletePhoto(observation.id, photo.id)"
+                    >
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </button>
+                  </div>
+                </figure>
+              }
+            </div>
+          }
+        </section>
+      </ion-card>
+    }
+  </section>
+</main>

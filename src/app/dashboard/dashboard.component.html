@@ -1,0 +1,134 @@
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div>
+      <p class="dashboard-kicker">Inicio de jornada</p>
+      <h1>{{ greeting() }}</h1>
+      <p class="sales-point">{{ journeyData.values().salesPointName || 'Punto de venta pendiente' }}</p>
+      <p class="advisor-code">Código del asesor: {{ journeyData.values().advisorCode || '—' }}</p>
+    </div>
+    <ion-button
+      class="refresh-button"
+      fill="clear"
+      aria-label="Actualizar rendimiento"
+      (click)="refreshMetrics()"
+    >
+      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+    </ion-button>
+  </header>
+
+  <div class="journey-date">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <span>Inicio: {{ journeyData.startDateTime() }}</span>
+  </div>
+
+  <section class="performance-card" aria-labelledby="performance-title">
+    <h2 id="performance-title">Cumplimiento total de la cuota</h2>
+    <div class="performance-content">
+      <div
+        class="performance-ring"
+        [class.performance-ring--good]="summary().tone === 'good'"
+        [class.performance-ring--low]="summary().tone === 'low'"
+        [style.--progress]="summary().progress + '%'"
+        role="img"
+        [attr.aria-label]="summary().percentage + '% de cumplimiento'"
+      >
+        <div class="performance-center">
+          <strong>{{ summary().percentage }}%</strong>
+          <span>{{ formatNumber(summary().totalSold) }} / {{ formatNumber(summary().totalQuota) }}</span>
+        </div>
+      </div>
+
+      <div class="performance-status">
+        @if (summary().tone === 'low') {
+          <ion-icon class="trend-icon trend-icon--low" name="trending-down-outline"></ion-icon>
+        } @else if (summary().tone === 'good') {
+          <ion-icon class="trend-icon trend-icon--good" name="trending-up-outline"></ion-icon>
+        }
+        <strong
+          [class.status--good]="summary().tone === 'good'"
+          [class.status--low]="summary().tone === 'low'"
+        >
+          {{ performanceLabel() }}
+        </strong>
+      </div>
+    </div>
+    <p class="bottles-caption">Botellas vendidas en la jornada actual</p>
+    <p class="updated-time">Actualizado {{ formattedUpdateTime() }}</p>
+  </section>
+
+  <section class="quota-summary" aria-label="Resumen de cuotas y ventas">
+    @for (section of summary().sections; track section.title) {
+      <article class="quota-card">
+        <h3>{{ section.title }}</h3>
+        <div class="quota-card-total">
+          <span>Cuota</span>
+          <strong>{{ formatNumber(section.quota) }}</strong>
+        </div>
+        <div class="quota-card-detail">
+          <span>Venta real</span>
+          <strong>{{ formatNumber(section.sold) }}</strong>
+        </div>
+        <div class="quota-card-detail">
+          <span>{{ section.pending < 0 ? 'Excedente' : 'Pendiente' }}</span>
+          <strong>{{ pendingText(section.pending) }}</strong>
+        </div>
+      </article>
+    }
+  </section>
+
+  <nav class="dashboard-actions" aria-label="Acciones de jornada">
+    <ion-button expand="block" [routerLink]="['/folder', 'Registro de ventas']">
+      <ion-icon slot="start" name="receipt-outline"></ion-icon>
+      Registrar Venta
+    </ion-button>
+    <ion-button expand="block" fill="outline" [routerLink]="['/folder', 'Informes']">
+      <ion-icon slot="start" name="document-text-outline"></ion-icon>
+      Ver Informe Preliminar
+    </ion-button>
+  </nav>
+
+  <section class="commercial-section" aria-labelledby="commercial-title">
+    <h2 id="commercial-title">Familias Comerciales</h2>
+    @for (group of commercialGroups(); track group.id) {
+      <article
+        class="commercial-card"
+        [class.commercial-card--good]="group.tone === 'good'"
+        [class.commercial-card--warning]="group.tone === 'warning'"
+        [class.commercial-card--danger]="group.tone === 'danger'"
+      >
+        <header class="commercial-card-header">
+          <div class="commercial-title">
+            <ion-icon name="pricetag-outline" aria-hidden="true"></ion-icon>
+            <div>
+              <h3>{{ group.title }}</h3>
+              <p>{{ group.subtitle }}</p>
+            </div>
+          </div>
+          <strong class="commercial-percentage">{{ group.percentage }}%</strong>
+        </header>
+
+        <div class="commercial-totals">
+          <span>Cuota: <strong>{{ formatNumber(group.quota) }} botellas</strong></span>
+          <span>Vendidas: <strong>{{ formatNumber(group.sold) }} botellas</strong></span>
+        </div>
+
+        <div
+          class="commercial-progress"
+          role="progressbar"
+          [attr.aria-label]="'Cumplimiento de ' + group.title"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="group.progress"
+        >
+          <span [style.width.%]="group.progress"></span>
+        </div>
+
+        <div class="commercial-variants">
+          @for (variant of group.variants; track variant.familyId) {
+            <span class="commercial-chip">{{ variant.label }}: {{ formatNumber(variant.sold) }} vendidas</span>
+          }
+        </div>
+      </article>
+    }
+  </section>
+</main>

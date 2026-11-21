@@ -1,0 +1,63 @@
+<main class="journey-page">
+  <p class="journey-hint">Completa los datos de la jornada. La hora de inicio la asigna el sistema.</p>
+
+  <ion-card class="journey-form">
+    @for (field of fields; track field.id) {
+      <div class="journey-field">
+        <label [for]="'journey-' + field.id">{{ field.label }}</label>
+        <div class="journey-controls">
+          <input
+            [id]="'journey-' + field.id"
+            [type]="field.type"
+            [placeholder]="field.placeholder"
+            [disabled]="!isEditing(field.id)"
+            [value]="value(field.id)"
+            [attr.aria-label]="field.label"
+            (input)="updateField(field.id, $event)"
+          />
+          <button
+            class="icon-action edit-action"
+            type="button"
+            [attr.aria-label]="(isEditing(field.id) ? 'Guardar ' : 'Editar ') + field.label"
+            (click)="toggleEdit(field.id)"
+          >
+            <ion-icon [name]="isEditing(field.id) ? 'checkmark-outline' : 'create-outline'"></ion-icon>
+          </button>
+          <button
+            class="icon-action delete-action"
+            type="button"
+            [attr.aria-label]="'Borrar ' + field.label"
+            (click)="clearField(field.id)"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="journey-field system-field">
+      <label>Fecha y hora de inicio de jornada</label>
+      <div class="datetime-display-row">
+        <div class="journey-date-time" aria-label="Fecha y hora asignadas por el sistema">
+          {{ journeyData.startDateTime() }}
+        </div>
+        <button
+          class="format-toggle"
+          type="button"
+          [attr.aria-label]="
+            'Cambiar a formato ' +
+            (journeyData.dateTimeFormat() === 'long' ? 'militar de 24 horas' : 'largo de 12 horas')
+          "
+          [attr.aria-pressed]="journeyData.dateTimeFormat() === 'long'"
+          (click)="toggleDateTimeFormat()"
+        >
+          <ion-icon name="swap-horizontal-outline"></ion-icon>
+        </button>
+      </div>
+      <small>Asignadas por el sistema; no se pueden editar ni borrar.</small>
+    </div>
+  </ion-card>
+  @if (journeyData.persistenceError()) {
+    <p class="journey-storage-error" role="alert">{{ journeyData.persistenceError() }}</p>
+  }
+</main>

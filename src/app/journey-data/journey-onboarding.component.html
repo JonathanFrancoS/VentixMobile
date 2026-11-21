@@ -1,0 +1,49 @@
+<div class="journey-onboarding" role="presentation">
+  <section class="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <p class="onboarding-kicker">Configuración de jornada</p>
+    <h1 id="onboarding-title">Iniciemos tu jornada</h1>
+    <div
+      class="onboarding-progress"
+      role="progressbar"
+      aria-label="Progreso de configuración"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="progress()"
+    >
+      <span [style.width.%]="progress()"></span>
+    </div>
+    <p class="onboarding-step">Paso {{ stepIndex() + 1 }} de 5</p>
+    <h2>{{ step().heading }}</h2>
+    <p class="onboarding-description">{{ step().description }}</p>
+
+    <form novalidate (submit)="nextStep($event)">
+      <label for="onboarding-value">{{ step().label }}{{ step().required ? '' : ' (opcional)' }}</label>
+      <input
+        id="onboarding-value"
+        type="text"
+        [value]="currentValue()"
+        [placeholder]="step().placeholder"
+        [attr.autocomplete]="step().autocomplete"
+        [attr.aria-invalid]="errorMessage() ? 'true' : null"
+        aria-describedby="onboarding-error"
+        [required]="step().required"
+        (input)="updateValue($event)"
+        (keydown.enter)="nextStep($event)"
+      />
+      <p id="onboarding-error" class="onboarding-error" aria-live="polite">
+        {{ errorMessage() }}
+      </p>
+
+      <div class="onboarding-actions">
+        @if (stepIndex() > 0) {
+          <ion-button type="button" fill="clear" (click)="previousStep()">Atrás</ion-button>
+        } @else {
+          <span></span>
+        }
+        <ion-button type="submit" class="onboarding-next" [disabled]="isSaving()">
+          {{ isSaving() ? 'Guardando...' : stepIndex() === 4 ? 'Iniciar jornada' : 'Continuar' }}
+        </ion-button>
+      </div>
+    </form>
+  </section>
+</div>

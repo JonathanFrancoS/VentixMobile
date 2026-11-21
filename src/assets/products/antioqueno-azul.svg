@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" fill="none">
+  <defs>
+    <linearGradient id="glass" x1="30" y1="30" x2="95" y2="145" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DDF5FA" stop-opacity=".9"/>
+      <stop offset=".48" stop-color="#8FC7D9" stop-opacity=".78"/>
+      <stop offset="1" stop-color="#D4EEF4" stop-opacity=".95"/>
+    </linearGradient>
+    <linearGradient id="label" x1="35" y1="80" x2="85" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#174A9C"/>
+      <stop offset="1" stop-color="#2769C8"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="151" rx="28" ry="5" fill="#0D2342" fill-opacity=".12"/>
+  <path d="M49 8h22v13l5 8v16l12 12a12 12 0 0 1 4 9v72a9 9 0 0 1-9 9H37a9 9 0 0 1-9-9V66a12 12 0 0 1 4-9l12-12V29l5-8V8Z" fill="url(#glass)" stroke="#6CA9BD" stroke-width="1.5"/>
+  <path d="M52 11h16v13H52z" fill="#D7EEF5"/>
+  <path d="M49 8h22v7H49z" fill="#174A9C"/>
+  <rect x="34" y="78" width="52" height="42" rx="2" fill="url(#label)"/>
+  <path d="M39 84h42M39 114h42" stroke="#C9E3F7" stroke-opacity=".8"/>
+  <circle cx="60" cy="99" r="8" stroke="#E9F4FC" stroke-width="1.5"/>
+  <path d="m60 92 3 7-3 7-3-7 3-7Z" fill="#E9F4FC"/>
+  <path d="M36 64 49 51V35h6v18L42 65v73h-6V64Z" fill="#fff" fill-opacity=".35"/>
+</svg>
