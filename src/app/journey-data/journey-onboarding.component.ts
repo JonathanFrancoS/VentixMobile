@@ -18,7 +18,7 @@ const journeySetupSteps: JourneySetupStep[] = [
     field: 'advisorName',
     heading: '¿Cómo te llamas?',
     label: 'Nombre del asesor',
-    description: 'Este nombre aparecerá en el saludo de Inicio.',
+    description: '',
     placeholder: 'Ej. Brian Tracy',
     autocomplete: 'name',
     required: true,
